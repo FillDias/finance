@@ -1,0 +1,9 @@
+<% content_for :title, "Editar categoria" %>
+<div class="page-header">
+  <h1>Editar categoria</h1>
+</div>
+
+<section class="formulario-secao">
+  <%= render "form", categoria: @categoria %>
+  <%= link_to "Voltar", categorias_path, class: "link-voltar" %>
+</section>

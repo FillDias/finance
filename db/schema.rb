@@ -10,9 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_10_203939) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_10_210040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "categorias", force: :cascade do |t|
+    t.string "nome", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nome"], name: "index_categorias_on_nome", unique: true
+  end
+
+  create_table "despesas", force: :cascade do |t|
+    t.decimal "valor", precision: 10, scale: 2, null: false
+    t.date "data", null: false
+    t.bigint "categoria_id", null: false
+    t.integer "tipo", null: false
+    t.integer "forma_pagamento", null: false
+    t.integer "dia_vencimento"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["categoria_id"], name: "index_despesas_on_categoria_id"
+    t.index ["data"], name: "index_despesas_on_data"
+  end
 
   create_table "rendas", force: :cascade do |t|
     t.decimal "valor", precision: 10, scale: 2, null: false
@@ -22,4 +42,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_10_203939) do
     t.datetime "updated_at", null: false
     t.index ["data"], name: "index_rendas_on_data"
   end
+
+  add_foreign_key "despesas", "categorias"
 end

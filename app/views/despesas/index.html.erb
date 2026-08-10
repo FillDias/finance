@@ -1,5 +1,67 @@
 <% content_for :title, "Despesas" %>
-<div class="page-placeholder">
+<div class="page-header">
   <h1>Despesas</h1>
-  <p>Em construção.</p>
 </div>
+
+<section class="filtro-secao">
+  <h2>Filtrar</h2>
+  <%= form_with url: despesas_path, method: :get, local: true, class: "formulario formulario-filtro" do |f| %>
+    <div class="campo">
+      <%= f.label :categoria_id, "Categoria" %>
+      <%= f.collection_select :categoria_id, @categorias, :id, :nome, { include_blank: "Todas", selected: @categoria_id }, {} %>
+    </div>
+    <div class="campo">
+      <%= f.label :data_inicio, "De" %>
+      <%= f.date_field :data_inicio, value: @data_inicio %>
+    </div>
+    <div class="campo">
+      <%= f.label :data_fim, "Até" %>
+      <%= f.date_field :data_fim, value: @data_fim %>
+    </div>
+    <%= f.submit "Filtrar" %>
+    <%= link_to "Limpar", despesas_path %>
+  <% end %>
+</section>
+
+<section class="formulario-secao">
+  <h2>Nova despesa</h2>
+  <%= render "form", despesa: @despesa, categorias: @categorias %>
+  <p class="ajuda"><%= link_to "Gerenciar categorias", categorias_path %></p>
+</section>
+
+<section>
+  <h2>Lançamentos</h2>
+  <% if @despesas.empty? %>
+    <p class="vazio">Nenhuma despesa encontrada.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Categoria</th>
+          <th>Tipo</th>
+          <th>Forma de pagamento</th>
+          <th>Vencimento</th>
+          <th>Valor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @despesas.each do |despesa| %>
+          <tr>
+            <td><%= despesa.data.strftime("%d/%m/%Y") %></td>
+            <td><%= despesa.categoria.nome %></td>
+            <td><%= despesa.tipo_label %></td>
+            <td><%= despesa.forma_pagamento_label %></td>
+            <td><%= despesa.dia_vencimento ? "dia #{despesa.dia_vencimento}" : "—" %></td>
+            <td class="valor"><%= moeda(despesa.valor) %></td>
+            <td class="acoes">
+              <%= link_to "Editar", edit_despesa_path(despesa) %>
+              <%= button_to "Excluir", despesa_path(despesa), method: :delete, data: { turbo_confirm: "Remover este lançamento?" }, class: "link-excluir" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>

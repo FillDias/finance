@@ -12,7 +12,8 @@ Rails.application.routes.draw do
   root "painel#index"
 
   resources :rendas, path: "receitas", only: [ :index, :create, :edit, :update, :destroy ]
-  get "despesas", to: "despesas#index"
+  resources :despesas, only: [ :index, :create, :edit, :update, :destroy ]
+  resources :categorias, only: [ :index, :create, :edit, :update, :destroy ]
   get "cartoes", to: "cartoes#index"
   get "emprestimos", to: "emprestimos#index"
   get "exportacoes", to: "exportacoes#index"

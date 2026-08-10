@@ -1,0 +1,18 @@
+<%= form_with model: categoria, url: (categoria.persisted? ? categoria_path(categoria) : categorias_path), local: true, class: "formulario" do |f| %>
+  <% if categoria.errors.any? %>
+    <div class="form-erros">
+      <ul>
+        <% categoria.errors.full_messages.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :nome, "Nome" %>
+    <%= f.text_field :nome, required: true, placeholder: "Alimentação, Transporte, Moradia..." %>
+  </div>
+
+  <%= f.submit categoria.persisted? ? "Salvar alterações" : "Criar categoria" %>
+<% end %>

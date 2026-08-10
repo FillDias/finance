@@ -106,7 +106,36 @@ body {
 }
 
 .page-header h1 {
+  margin: 0 0 4px;
+}
+
+.page-header .subtitulo {
   margin: 0 0 24px;
+  color: var(--cor-texto-suave);
+}
+
+.formulario-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.formulario-filtro .campo {
+  margin-bottom: 0;
+  max-width: 200px;
+}
+
+.formulario select {
+  padding: 8px 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.ajuda {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
 }
 
 section {

@@ -1,0 +1,9 @@
+<% content_for :title, "Editar despesa" %>
+<div class="page-header">
+  <h1>Editar despesa</h1>
+</div>
+
+<section class="formulario-secao">
+  <%= render "form", despesa: @despesa, categorias: @categorias %>
+  <%= link_to "Voltar", despesas_path, class: "link-voltar" %>
+</section>

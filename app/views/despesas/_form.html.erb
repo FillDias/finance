@@ -1,0 +1,43 @@
+<%= form_with model: despesa, url: (despesa.persisted? ? despesa_path(despesa) : despesas_path), local: true, class: "formulario" do |f| %>
+  <% if despesa.errors.any? %>
+    <div class="form-erros">
+      <ul>
+        <% despesa.errors.full_messages.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :valor, "Valor" %>
+    <%= f.number_field :valor, step: "0.01", min: "0.01", required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :data, "Data" %>
+    <%= f.date_field :data, required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :categoria_id, "Categoria" %>
+    <%= f.collection_select :categoria_id, categorias, :id, :nome, prompt: "Selecione" %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :tipo, "Tipo" %>
+    <%= f.select :tipo, Despesa::TIPO_LABEL.map { |valor, rotulo| [ rotulo, valor ] }, prompt: "Selecione" %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :forma_pagamento, "Forma de pagamento" %>
+    <%= f.select :forma_pagamento, Despesa::FORMA_PAGAMENTO_LABEL.map { |valor, rotulo| [ rotulo, valor ] }, prompt: "Selecione" %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :dia_vencimento, "Dia de vencimento (apenas para despesas fixas)" %>
+    <%= f.number_field :dia_vencimento, min: 1, max: 31 %>
+  </div>
+
+  <%= f.submit despesa.persisted? ? "Salvar alterações" : "Registrar despesa" %>
+<% end %>

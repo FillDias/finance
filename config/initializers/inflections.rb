@@ -14,3 +14,10 @@
 # ActiveSupport::Inflector.inflections(:en) do |inflect|
 #   inflect.acronym "RESTful"
 # end
+
+# Rails' default English inflector treats words ending in "-ia" as the
+# plural of an "-ium" word (criteria/criterion, media/medium), which
+# wrongly singularizes our Portuguese "categoria" to "categorium".
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.irregular "categoria", "categorias"
+end
