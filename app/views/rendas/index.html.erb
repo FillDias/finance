@@ -1,5 +1,53 @@
 <% content_for :title, "Receitas" %>
-<div class="page-placeholder">
+<div class="page-header">
   <h1>Receitas</h1>
-  <p>Em construção.</p>
 </div>
+
+<section class="totais-por-fonte">
+  <h2>Total por fonte em <%= Date.current.year %></h2>
+  <% if @total_por_fonte.empty? %>
+    <p class="vazio">Nenhuma renda registrada este ano.</p>
+  <% else %>
+    <ul class="lista-totais">
+      <% @total_por_fonte.each do |fonte, total| %>
+        <li><span><%= fonte %></span><strong><%= moeda(total) %></strong></li>
+      <% end %>
+    </ul>
+  <% end %>
+</section>
+
+<section class="formulario-secao">
+  <h2>Nova renda</h2>
+  <%= render "form", renda: @renda %>
+</section>
+
+<section>
+  <h2>Lançamentos</h2>
+  <% if @rendas.empty? %>
+    <p class="vazio">Nenhum lançamento ainda.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Fonte</th>
+          <th>Valor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @rendas.each do |renda| %>
+          <tr>
+            <td><%= renda.data.strftime("%d/%m/%Y") %></td>
+            <td><%= renda.fonte %></td>
+            <td class="valor"><%= moeda(renda.valor) %></td>
+            <td class="acoes">
+              <%= link_to "Editar", edit_renda_path(renda) %>
+              <%= button_to "Excluir", renda_path(renda), method: :delete, data: { turbo_confirm: "Remover este lançamento?" }, class: "link-excluir" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>

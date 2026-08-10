@@ -5,8 +5,8 @@ class Resultado
     new(sucesso: true, valor: valor)
   end
 
-  def self.erro(*erros)
-    new(sucesso: false, erros: erros.flatten)
+  def self.erro(*erros, valor: nil)
+    new(sucesso: false, valor: valor, erros: erros.flatten)
   end
 
   def sucesso?

@@ -10,8 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 0) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_10_203939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "rendas", force: :cascade do |t|
+    t.decimal "valor", precision: 10, scale: 2, null: false
+    t.date "data", null: false
+    t.string "fonte", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["data"], name: "index_rendas_on_data"
+  end
 end

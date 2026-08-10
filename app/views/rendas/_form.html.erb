@@ -1,0 +1,28 @@
+<%= form_with model: renda, url: (renda.persisted? ? renda_path(renda) : rendas_path), local: true, class: "formulario" do |f| %>
+  <% if renda.errors.any? %>
+    <div class="form-erros">
+      <ul>
+        <% renda.errors.full_messages.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :valor, "Valor" %>
+    <%= f.number_field :valor, step: "0.01", min: "0.01", required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :data, "Data" %>
+    <%= f.date_field :data, required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :fonte, "Fonte" %>
+    <%= f.text_field :fonte, required: true, placeholder: "Salário, Freela, Venda avulsa..." %>
+  </div>
+
+  <%= f.submit renda.persisted? ? "Salvar alterações" : "Registrar renda" %>
+<% end %>

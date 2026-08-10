@@ -104,3 +104,140 @@ body {
 .page-placeholder p {
   color: var(--cor-texto-suave);
 }
+
+.page-header h1 {
+  margin: 0 0 24px;
+}
+
+section {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+section h2 {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.vazio {
+  color: var(--cor-texto-suave);
+}
+
+.lista-totais {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.lista-totais li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lista-totais strong {
+  font-size: 1.2rem;
+  color: var(--cor-positivo);
+}
+
+.formulario .campo {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 320px;
+}
+
+.formulario label {
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+}
+
+.formulario input {
+  padding: 8px 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.formulario input[type="submit"] {
+  background: var(--cor-neutra);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  max-width: fit-content;
+  padding: 8px 18px;
+}
+
+.form-erros {
+  background: #fdecea;
+  border: 1px solid var(--cor-negativo);
+  color: var(--cor-negativo);
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.form-erros ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.tabela-densa {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabela-densa th {
+  text-align: left;
+  color: var(--cor-texto-suave);
+  font-weight: 500;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.tabela-densa td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.tabela-densa td.valor {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabela-densa td.acoes {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tabela-densa td.acoes form {
+  display: inline;
+}
+
+.link-excluir {
+  background: none;
+  border: none;
+  color: var(--cor-negativo);
+  cursor: pointer;
+  padding: 0;
+  margin-left: 12px;
+  font-size: inherit;
+  text-decoration: underline;
+}
+
+.link-voltar {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--cor-texto-suave);
+}
