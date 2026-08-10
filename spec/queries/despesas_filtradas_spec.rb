@@ -22,13 +22,19 @@ RSpec.describe DespesasFiltradas do
   end
 
   it "filtra por período" do
-    resultado = DespesasFiltradas.call(periodo: Date.new(2026, 1, 1)..Date.new(2026, 2, 28))
+    resultado = DespesasFiltradas.call(data_inicio: Date.new(2026, 1, 1), data_fim: Date.new(2026, 2, 28))
+
+    expect(resultado.size).to eq(2)
+  end
+
+  it "filtra por período com apenas a data de início" do
+    resultado = DespesasFiltradas.call(data_inicio: Date.new(2026, 2, 1))
 
     expect(resultado.size).to eq(2)
   end
 
   it "combina filtro de categoria e período" do
-    resultado = DespesasFiltradas.call(categoria_id: alimentacao.id, periodo: Date.new(2026, 3, 1)..Date.new(2026, 3, 31))
+    resultado = DespesasFiltradas.call(categoria_id: alimentacao.id, data_inicio: Date.new(2026, 3, 1), data_fim: Date.new(2026, 3, 31))
 
     expect(resultado.size).to eq(1)
     expect(resultado.first.data).to eq(Date.new(2026, 3, 1))

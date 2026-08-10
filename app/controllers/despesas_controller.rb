@@ -3,11 +3,7 @@ class DespesasController < ApplicationController
 
   def index
     @despesa = Despesa.new
-    @categorias = Categoria.order(:nome)
-    @categoria_id = params[:categoria_id].presence
-    @data_inicio = params[:data_inicio].presence
-    @data_fim = params[:data_fim].presence
-    @despesas = DespesasFiltradas.call(categoria_id: @categoria_id, periodo: periodo_do_filtro)
+    carregar_lista_filtrada
   end
 
   def create
@@ -17,8 +13,7 @@ class DespesasController < ApplicationController
       redirect_to despesas_path, notice: "Despesa registrada."
     else
       @despesa = resultado.valor
-      @categorias = Categoria.order(:nome)
-      @despesas = DespesasFiltradas.call
+      carregar_lista_filtrada
       render :index, status: :unprocessable_entity
     end
   end
@@ -50,10 +45,12 @@ class DespesasController < ApplicationController
     @despesa = Despesa.find(params[:id])
   end
 
-  def periodo_do_filtro
-    return nil if @data_inicio.blank? && @data_fim.blank?
-
-    Date.parse(@data_inicio.presence || "0001-01-01")..Date.parse(@data_fim.presence || "9999-12-31")
+  def carregar_lista_filtrada
+    @categorias = Categoria.order(:nome)
+    @categoria_id = params[:categoria_id].presence
+    @data_inicio = params[:data_inicio].presence
+    @data_fim = params[:data_fim].presence
+    @despesas = DespesasFiltradas.call(categoria_id: @categoria_id, data_inicio: @data_inicio, data_fim: @data_fim)
   end
 
   def despesa_params
