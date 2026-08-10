@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   root "painel#index"
 
-  get "receitas", to: "receitas#index"
+  get "receitas", to: "rendas#index", as: "rendas"
   get "despesas", to: "despesas#index"
   get "cartoes", to: "cartoes#index"
   get "emprestimos", to: "emprestimos#index"
