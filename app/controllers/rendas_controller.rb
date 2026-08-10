@@ -1,4 +1,6 @@
 class RendasController < ApplicationController
+  before_action :set_renda, only: [ :edit, :update, :destroy ]
+
   def index
     @renda = Renda.new
     carregar_lista_e_totais
@@ -17,12 +19,10 @@ class RendasController < ApplicationController
   end
 
   def edit
-    @renda = Renda.find(params[:id])
   end
 
   def update
-    renda = Renda.find(params[:id])
-    resultado = AtualizarRenda.call(renda: renda, **renda_params)
+    resultado = AtualizarRenda.call(renda: @renda, **renda_params)
 
     if resultado.sucesso?
       redirect_to rendas_path, notice: "Renda atualizada."
@@ -33,12 +33,15 @@ class RendasController < ApplicationController
   end
 
   def destroy
-    renda = Renda.find(params[:id])
-    ExcluirRenda.call(renda: renda)
+    ExcluirRenda.call(renda: @renda)
     redirect_to rendas_path, notice: "Renda removida."
   end
 
   private
+
+  def set_renda
+    @renda = Renda.find(params[:id])
+  end
 
   def carregar_lista_e_totais
     @rendas = Renda.order(data: :desc)
