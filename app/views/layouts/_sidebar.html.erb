@@ -1,0 +1,41 @@
+<nav class="sidebar" aria-label="Navegação principal">
+  <div class="sidebar-brand">Finance</div>
+  <ul class="sidebar-nav">
+    <li class="<%= "active" if params[:controller] == "painel" %>">
+      <%= link_to root_path do %>
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        <span>Painel</span>
+      <% end %>
+    </li>
+    <li class="<%= "active" if params[:controller] == "receitas" %>">
+      <%= link_to receitas_path do %>
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+        <span>Receitas</span>
+      <% end %>
+    </li>
+    <li class="<%= "active" if params[:controller] == "despesas" %>">
+      <%= link_to despesas_path do %>
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 7 9 13 13 9 21 17"/><polyline points="21 10 21 17 14 17"/></svg>
+        <span>Despesas</span>
+      <% end %>
+    </li>
+    <li class="<%= "active" if params[:controller] == "cartoes" %>">
+      <%= link_to cartoes_path do %>
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        <span>Cartões</span>
+      <% end %>
+    </li>
+    <li class="<%= "active" if params[:controller] == "emprestimos" %>">
+      <%= link_to emprestimos_path do %>
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><line x1="5" y1="21" x2="5" y2="10"/><line x1="19" y1="21" x2="19" y2="10"/><polygon points="12 3 21 9 3 9"/></svg>
+        <span>Empréstimos</span>
+      <% end %>
+    </li>
+    <li class="<%= "active" if params[:controller] == "exportacoes" %>">
+      <%= link_to exportacoes_path do %>
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Exportar</span>
+      <% end %>
+    </li>
+  </ul>
+</nav>

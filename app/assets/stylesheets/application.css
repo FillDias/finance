@@ -1,0 +1,106 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+:root {
+  --cor-positivo: #1a7f4b;
+  --cor-negativo: #c0392b;
+  --cor-neutra: #2d5fae;
+  --cor-fundo: #f5f6f8;
+  --cor-superficie: #ffffff;
+  --cor-texto: #1f2430;
+  --cor-texto-suave: #6b7280;
+  --cor-borda: #e2e5ea;
+  --sidebar-largura: 220px;
+  --sidebar-fundo: #1a2233;
+  --sidebar-texto: #c7cede;
+  --sidebar-ativo-fundo: #2d5fae;
+  --sidebar-ativo-texto: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-largura);
+  height: 100vh;
+  background: var(--sidebar-fundo);
+  color: var(--sidebar-texto);
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  padding: 20px 24px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.sidebar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.sidebar-nav li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  color: var(--sidebar-texto);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.sidebar-nav li a:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-nav li.active a {
+  background: var(--sidebar-ativo-fundo);
+  color: var(--sidebar-ativo-texto);
+}
+
+.sidebar-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.main-content {
+  margin-left: var(--sidebar-largura);
+  padding: 32px 40px;
+  min-height: 100vh;
+}
+
+.page-placeholder h1 {
+  margin: 0 0 8px;
+}
+
+.page-placeholder p {
+  color: var(--cor-texto-suave);
+}
