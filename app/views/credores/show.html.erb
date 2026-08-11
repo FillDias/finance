@@ -5,7 +5,7 @@
 
 <section>
   <h2>Cartões</h2>
-  <% if @credor.cartoes.empty? %>
+  <% if @cartoes.empty? %>
     <p class="vazio">Nenhum cartão cadastrado para este credor.</p>
   <% else %>
     <table class="tabela-densa">
@@ -19,7 +19,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @credor.cartoes.order(:nome).each do |cartao| %>
+        <% @cartoes.each do |cartao| %>
           <tr>
             <td><%= cartao.nome %></td>
             <td class="valor"><%= moeda(cartao.limite_total) %></td>
