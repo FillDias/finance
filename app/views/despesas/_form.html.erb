@@ -32,7 +32,7 @@
   <div class="campo">
     <%= f.label :forma_pagamento, "Forma de pagamento" %>
     <% opcoes_forma_pagamento = Despesa::FORMA_PAGAMENTO_LABEL.map { |valor, rotulo| [ rotulo, valor ] } %>
-    <% opcoes_forma_pagamento += [ [ "Cartão", "cartao" ] ] if permitir_cartao %>
+    <% opcoes_forma_pagamento += [ [ "Cartão", Despesa::FORMA_PAGAMENTO_CARTAO ] ] if permitir_cartao %>
     <%= f.select :forma_pagamento, opcoes_forma_pagamento, prompt: "Selecione" %>
   </div>
 

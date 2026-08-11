@@ -7,6 +7,11 @@ class Despesa < ApplicationRecord
 
   FORMA_PAGAMENTO_LABEL = { "debito" => "Débito", "boleto" => "Boleto", "pix" => "PIX", "dinheiro" => "Dinheiro" }.freeze
 
+  # Não é um valor do enum forma_pagamento — uma Despesa paga no cartão nunca
+  # é salva como Despesa (vira Compra, ver CriarDespesa). Só existe pra dar
+  # nome único ao valor que o formulário envia e o service reconhece.
+  FORMA_PAGAMENTO_CARTAO = "cartao"
+
   validates :valor, presence: true, numericality: { greater_than: 0 }
   validates :data, presence: true
   validates :tipo, presence: true

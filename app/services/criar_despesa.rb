@@ -1,6 +1,4 @@
 class CriarDespesa < ApplicationService
-  FORMA_PAGAMENTO_CARTAO = "cartao"
-
   def initialize(valor:, data:, categoria_id:, tipo:, forma_pagamento:, dia_vencimento: nil, cartao_id: nil, parcelado: false, numero_parcelas: nil)
     @valor = valor
     @data = data
@@ -35,7 +33,7 @@ class CriarDespesa < ApplicationService
   private
 
   def forma_pagamento_cartao?
-    @forma_pagamento.to_s == FORMA_PAGAMENTO_CARTAO
+    @forma_pagamento.to_s == Despesa::FORMA_PAGAMENTO_CARTAO
   end
 
   # Uma Despesa paga no cartão não gera um registro Despesa próprio — vira uma
