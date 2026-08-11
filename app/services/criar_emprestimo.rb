@@ -45,7 +45,7 @@ class CriarEmprestimo < ApplicationService
     return { erro: "Linha #{numero_da_linha}: data inválida (\"#{partes[0]}\")" } unless data
 
     valor = parsear_valor(partes[1])
-    return { erro: "Linha #{numero_da_linha}: valor inválido (\"#{partes[1]}\")" } unless valor
+    return { erro: "Linha #{numero_da_linha}: valor inválido (\"#{partes[1]}\")" } unless valor && valor > 0
 
     { data_vencimento: data, valor: valor }
   end

@@ -88,4 +88,16 @@ RSpec.describe CriarEmprestimo do
     expect(resultado).to be_sucesso
     expect(resultado.valor.parcelas.count).to eq(2)
   end
+
+  it "rejeita graciosamente (sem levantar exceção) uma linha com valor zero ou negativo" do
+    resultado = CriarEmprestimo.call(
+      nome: "Financiamento", credor_id: credor.id, valor_total: 30000,
+      cronograma_texto: cronograma([ "2026-08-15,450.00", "2026-09-15,-50.00" ])
+    )
+
+    expect(resultado).to be_erro
+    expect(resultado.erros.first).to include("Linha 2")
+    expect(Emprestimo.count).to eq(0)
+    expect(Parcela.count).to eq(0)
+  end
 end
