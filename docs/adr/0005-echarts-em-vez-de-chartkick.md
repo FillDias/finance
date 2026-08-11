@@ -1,0 +1,9 @@
+# Apache ECharts em vez de chartkick para os gráficos do dashboard
+
+O spec original previa chartkick (um helper Rails simples em cima de Chart.js/Google Charts) complementado por Chart.js quando precisasse de mais controle. O padrão de qualidade exigido para os gráficos do Painel — comparação com período anterior, tooltips com composição (não só o valor), anotações diretas no gráfico destacando pontos-chave, sparkline em todo card de KPI, drill-down conectado a Turbo Frames, gráfico waterfall, rosca e barras com gradiente — ultrapassa o que a abstração simples do chartkick foi projetada para cobrir; usá-lo aqui viraria obstáculo, não ajuda.
+
+Decidimos adotar **Apache ECharts** como biblioteca de gráficos, abandonando chartkick. `markPoint`/`markLine`/`markArea` cobrem anotação direta no gráfico nativamente (mais flexível que o equivalente em outras bibliotecas avaliadas); waterfall e gradiente são padrões bem documentados no ECharts sem precisar de plugins extras. **groupdate** continua no Gemfile — agrupamento por mês nas queries (backend) é uma decisão independente de qual biblioteca desenha o gráfico (frontend).
+
+Integração: ECharts é pinado via importmap (sem bundler). Um único Stimulus controller genérico instancia qualquer gráfico a partir de uma config JSON vinda do servidor (uma query prepara os dados, a view serializa como JSON, o controller só inicializa `echarts.init` e aplica `setOption`) — evita reescrever a inicialização em cada tela que tiver gráfico.
+
+Alternativa considerada: ApexCharts (também tem gradiente/anotação/sparkline nativos, boas tooltips) — ECharts foi preferido especificamente pela flexibilidade de `markPoint`/`markLine` para anotações e por cobrir waterfall de forma mais direta. Chart.js puro foi descartado porque exigiria plugins extras (chartjs-plugin-annotation, gradientes manuais) para cobrir o mesmo terreno — mais manutenção para um projeto solo.

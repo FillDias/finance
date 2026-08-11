@@ -1,0 +1,5 @@
+# Dívida de cartão em duas camadas: Saldo Herdado agregado + Compra/Parcela individual, com data de corte por cartão
+
+O histórico de dívida em cartão de crédito não tem detalhe de compra por compra — só o valor total de cada fatura mês a mês, já negociado com o banco. Reconstruir cada compra retroativamente não é viável nem necessário. Decidimos modelar a dívida de cada Cartão em duas camadas: **Saldo Herdado**, um valor total conhecido por mês sem itens, válido até uma **data de corte** própria de cada cartão (cada cartão pode ser importado em momento diferente); e **Compra**, lançada item por item a partir dessa data, sempre gerando ao menos uma **Parcela**. A Fatura projetada de um mês soma as duas fontes. Empréstimos/Financiamentos não usam essa camada — o cronograma de Parcelas já é conhecido por completo desde o início e é cadastrado de uma vez.
+
+Alternativa rejeitada: forçar todo o histórico de cartão em Compras/Parcelas individuais (exigiria reconstruir de memória centenas de compras antigas, inviável e propenso a erro) ou tratar Empréstimo com a mesma camada de saldo agregado (desnecessário, já que o cronograma de empréstimo é conhecido de antemão).

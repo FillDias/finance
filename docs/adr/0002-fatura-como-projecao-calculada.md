@@ -1,0 +1,5 @@
+# Fatura é uma projeção calculada, não uma entidade com ciclo de vida
+
+O requisito central do projeto é ver a fatura de um cartão antes dela fechar no banco — algo que só faz sentido se a fatura for recalculada a qualquer momento a partir dos dados-fonte (Saldo Herdado do mês + soma das Parcelas de Compras que caem naquele mês, respeitando o dia de fechamento do cartão), não travada num registro estático. Decidimos não modelar Fatura como uma entidade persistida com estados (aberta → fechada → paga). Em vez disso, ela é sempre um cálculo em cima de Saldo Herdado e Parcela, com apenas um registro simples e opcional de pagamento (data + valor pago) por Cartão e mês, usado só para riscar itens da lista de pendências.
+
+Alternativa rejeitada: modelar Fatura com ciclo de vida completo (aberta/fechada/paga), que é o padrão comum em apps financeiros — mas isso exigiria um job/processo pra "fechar" faturas automaticamente na data certa, e um estado fechado tornaria a projeção pré-fechamento (o requisito central) uma consulta totalmente diferente da pós-fechamento, duplicando lógica sem necessidade real neste app.
