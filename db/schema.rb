@@ -10,15 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_10_210040) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_10_224508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "cartoes", force: :cascade do |t|
+    t.string "nome", null: false
+    t.bigint "credor_id", null: false
+    t.decimal "limite_total", precision: 10, scale: 2, null: false
+    t.integer "dia_fechamento", null: false
+    t.integer "dia_vencimento", null: false
+    t.date "data_corte", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["credor_id"], name: "index_cartoes_on_credor_id"
+  end
 
   create_table "categorias", force: :cascade do |t|
     t.string "nome", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["nome"], name: "index_categorias_on_nome", unique: true
+  end
+
+  create_table "credores", force: :cascade do |t|
+    t.string "nome", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nome"], name: "index_credores_on_nome", unique: true
   end
 
   create_table "despesas", force: :cascade do |t|
@@ -43,5 +62,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_10_210040) do
     t.index ["data"], name: "index_rendas_on_data"
   end
 
+  add_foreign_key "cartoes", "credores"
   add_foreign_key "despesas", "categorias"
 end

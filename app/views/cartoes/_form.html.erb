@@ -1,0 +1,44 @@
+<%= form_with model: cartao, url: (cartao.persisted? ? cartao_path(cartao) : cartoes_path), local: true, class: "formulario" do |f| %>
+  <% if cartao.errors.any? %>
+    <div class="form-erros">
+      <ul>
+        <% cartao.errors.full_messages.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :nome, "Nome" %>
+    <%= f.text_field :nome, required: true, placeholder: "Nubank Ultravioleta..." %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :credor_id, "Credor" %>
+    <%= f.collection_select :credor_id, credores, :id, :nome, prompt: "Selecione" %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :limite_total, "Limite total" %>
+    <%= f.number_field :limite_total, step: "0.01", min: "0.01", required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :dia_fechamento, "Dia de fechamento" %>
+    <%= f.number_field :dia_fechamento, min: 1, max: 31, required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :dia_vencimento, "Dia de vencimento" %>
+    <%= f.number_field :dia_vencimento, min: 1, max: 31, required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :data_corte, "Data de corte" %>
+    <%= f.date_field :data_corte, required: true %>
+    <small>A partir desta data, compras neste cartão passam a ser lançadas individualmente.</small>
+  </div>
+
+  <%= f.submit cartao.persisted? ? "Salvar alterações" : "Criar cartão" %>
+<% end %>

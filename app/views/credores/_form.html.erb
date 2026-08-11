@@ -1,0 +1,18 @@
+<%= form_with model: credor, url: (credor.persisted? ? credor_path(credor) : credores_path), local: true, class: "formulario" do |f| %>
+  <% if credor.errors.any? %>
+    <div class="form-erros">
+      <ul>
+        <% credor.errors.full_messages.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :nome, "Nome" %>
+    <%= f.text_field :nome, required: true, placeholder: "Nubank, Santander, Caixa..." %>
+  </div>
+
+  <%= f.submit credor.persisted? ? "Salvar alterações" : "Criar credor" %>
+<% end %>

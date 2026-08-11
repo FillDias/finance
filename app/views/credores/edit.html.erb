@@ -1,0 +1,9 @@
+<% content_for :title, "Editar credor" %>
+<div class="page-header">
+  <h1>Editar credor</h1>
+</div>
+
+<section class="formulario-secao">
+  <%= render "form", credor: @credor %>
+  <%= link_to "Voltar", credores_path, class: "link-voltar" %>
+</section>

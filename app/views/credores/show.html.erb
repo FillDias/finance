@@ -1,40 +1,30 @@
-<% content_for :title, "Cartões" %>
+<% content_for :title, @credor.nome %>
 <div class="page-header">
-  <h1>Cartões</h1>
+  <h1><%= @credor.nome %></h1>
 </div>
 
-<section class="formulario-secao">
-  <h2>Novo cartão</h2>
-  <%= render "form", cartao: @cartao, credores: @credores %>
-  <p class="ajuda"><%= link_to "Gerenciar credores", credores_path %></p>
-</section>
-
 <section>
-  <h2>Cartões cadastrados</h2>
-  <% if @cartoes.empty? %>
-    <p class="vazio">Nenhum cartão cadastrado ainda.</p>
+  <h2>Cartões</h2>
+  <% if @credor.cartoes.empty? %>
+    <p class="vazio">Nenhum cartão cadastrado para este credor.</p>
   <% else %>
     <table class="tabela-densa">
       <thead>
         <tr>
           <th>Nome</th>
-          <th>Credor</th>
           <th>Limite</th>
           <th>Fechamento</th>
           <th>Vencimento</th>
-          <th>Data de corte</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <% @cartoes.each do |cartao| %>
+        <% @credor.cartoes.order(:nome).each do |cartao| %>
           <tr>
             <td><%= cartao.nome %></td>
-            <td><%= link_to cartao.credor.nome, credor_path(cartao.credor) %></td>
             <td class="valor"><%= moeda(cartao.limite_total) %></td>
             <td>dia <%= cartao.dia_fechamento %></td>
             <td>dia <%= cartao.dia_vencimento %></td>
-            <td><%= cartao.data_corte.strftime("%d/%m/%Y") %></td>
             <td class="acoes"><%= link_to "Editar", edit_cartao_path(cartao) %></td>
           </tr>
         <% end %>
@@ -42,3 +32,10 @@
     </table>
   <% end %>
 </section>
+
+<section>
+  <h2>Empréstimos</h2>
+  <p class="vazio">Módulo de Empréstimos ainda não implementado.</p>
+</section>
+
+<%= link_to "Voltar", credores_path, class: "link-voltar" %>

@@ -1,0 +1,38 @@
+<% content_for :title, "Credores" %>
+<div class="page-header">
+  <h1>Credores</h1>
+  <p class="subtitulo">Bancos e financeiras que emitem seus cartões e empréstimos.</p>
+</div>
+
+<section class="formulario-secao">
+  <h2>Novo credor</h2>
+  <%= render "form", credor: @credor %>
+</section>
+
+<section>
+  <h2>Credores cadastrados</h2>
+  <% if @credores.empty? %>
+    <p class="vazio">Nenhum credor ainda.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @credores.each do |credor| %>
+          <tr>
+            <td><%= link_to credor.nome, credor_path(credor) %></td>
+            <td class="acoes">
+              <%= link_to "Editar", edit_credor_path(credor) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>
+
+<%= link_to "Voltar para Cartões", cartoes_path, class: "link-voltar" %>

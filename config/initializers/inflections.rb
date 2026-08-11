@@ -20,4 +20,6 @@
 # wrongly singularizes our Portuguese "categoria" to "categorium".
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.irregular "categoria", "categorias"
+  inflect.irregular "credor", "credores"
+  inflect.irregular "cartao", "cartoes"
 end

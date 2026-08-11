@@ -1,0 +1,9 @@
+<% content_for :title, "Editar cartão" %>
+<div class="page-header">
+  <h1>Editar cartão</h1>
+</div>
+
+<section class="formulario-secao">
+  <%= render "form", cartao: @cartao, credores: @credores %>
+  <%= link_to "Voltar", cartoes_path, class: "link-voltar" %>
+</section>
