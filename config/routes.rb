@@ -14,7 +14,9 @@ Rails.application.routes.draw do
   resources :rendas, path: "receitas", only: [ :index, :create, :edit, :update, :destroy ]
   resources :despesas, only: [ :index, :create, :edit, :update, :destroy ]
   resources :categorias, only: [ :index, :create, :edit, :update, :destroy ]
-  resources :cartoes, only: [ :index, :show, :create, :edit, :update ]
+  resources :cartoes, only: [ :index, :show, :create, :edit, :update ] do
+    resources :compras, only: [ :create ]
+  end
   resources :credores, only: [ :index, :show, :create, :edit, :update ]
 
   resources :saldos_herdados, only: [ :create ] do

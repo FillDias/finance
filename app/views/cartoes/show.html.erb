@@ -79,4 +79,77 @@
   <% end %>
 </section>
 
+<section class="formulario-secao">
+  <h2>Lançar compra</h2>
+  <%= form_with model: @nova_compra, url: cartao_compras_path(@cartao), local: true, class: "formulario" do |f| %>
+    <% if @nova_compra.errors.any? %>
+      <div class="form-erros">
+        <ul>
+          <% @nova_compra.errors.full_messages.each do |mensagem| %>
+            <li><%= mensagem %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="campo">
+      <%= f.label :data_compra, "Data da compra" %>
+      <%= f.date_field :data_compra, required: true %>
+    </div>
+
+    <div class="campo">
+      <%= f.label :valor_total, "Valor total" %>
+      <%= f.number_field :valor_total, step: "0.01", min: "0.01", required: true %>
+    </div>
+
+    <div class="campo campo-checkbox">
+      <%= f.check_box :parcelado %>
+      <%= f.label :parcelado, "Parcelada" %>
+    </div>
+
+    <div class="campo">
+      <%= f.label :numero_parcelas, "Número de parcelas (se parcelada)" %>
+      <%= f.number_field :numero_parcelas, min: 2 %>
+    </div>
+
+    <%= f.submit "Lançar compra" %>
+  <% end %>
+  <p class="ajuda">Compras só podem ser lançadas a partir da data de corte deste cartão (<%= @cartao.data_corte.strftime("%d/%m/%Y") %>).</p>
+</section>
+
+<section>
+  <h2>Compras e parcelas</h2>
+  <% if @compras.empty? %>
+    <p class="vazio">Nenhuma compra lançada para este cartão.</p>
+  <% else %>
+    <% @compras.each do |compra| %>
+      <div class="compra-bloco">
+        <p class="compra-cabecalho">
+          <%= compra.data_compra.strftime("%d/%m/%Y") %> ·
+          <%= moeda(compra.valor_total) %> ·
+          <%= compra.parcelado? ? "#{compra.numero_parcelas}x" : "à vista" %>
+        </p>
+        <table class="tabela-densa">
+          <thead>
+            <tr>
+              <th>Vencimento</th>
+              <th>Valor</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% compra.parcelas.order(:data_vencimento).each do |parcela| %>
+              <tr>
+                <td><%= parcela.data_vencimento.strftime("%m/%Y") %></td>
+                <td class="valor"><%= moeda(parcela.valor) %></td>
+                <td><%= parcela.status_label %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  <% end %>
+</section>
+
 <%= link_to "Voltar", cartoes_path, class: "link-voltar" %>

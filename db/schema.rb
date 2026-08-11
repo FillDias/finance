@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_11_021640) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_11_103358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,6 +33,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_021640) do
     t.index ["nome"], name: "index_categorias_on_nome", unique: true
   end
 
+  create_table "compras", force: :cascade do |t|
+    t.bigint "cartao_id", null: false
+    t.date "data_compra", null: false
+    t.decimal "valor_total", precision: 10, scale: 2, null: false
+    t.boolean "parcelado", default: false, null: false
+    t.integer "numero_parcelas", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cartao_id"], name: "index_compras_on_cartao_id"
+    t.index ["data_compra"], name: "index_compras_on_data_compra"
+  end
+
   create_table "credores", force: :cascade do |t|
     t.string "nome", null: false
     t.datetime "created_at", null: false
@@ -51,6 +63,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_021640) do
     t.datetime "updated_at", null: false
     t.index ["categoria_id"], name: "index_despesas_on_categoria_id"
     t.index ["data"], name: "index_despesas_on_data"
+  end
+
+  create_table "parcelas", force: :cascade do |t|
+    t.string "origem_type", null: false
+    t.bigint "origem_id", null: false
+    t.decimal "valor", precision: 10, scale: 2, null: false
+    t.date "data_vencimento", null: false
+    t.integer "status", default: 0, null: false
+    t.date "data_pagamento"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["data_vencimento"], name: "index_parcelas_on_data_vencimento"
+    t.index ["origem_type", "origem_id"], name: "index_parcelas_on_origem"
   end
 
   create_table "rendas", force: :cascade do |t|
@@ -75,6 +100,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_021640) do
   end
 
   add_foreign_key "cartoes", "credores"
+  add_foreign_key "compras", "cartoes"
   add_foreign_key "despesas", "categorias"
   add_foreign_key "saldos_herdados", "cartoes"
 end

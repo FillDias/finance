@@ -214,6 +214,29 @@ section h2 {
   color: var(--cor-texto-suave);
 }
 
+.campo-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+}
+
+.campo-checkbox label {
+  margin: 0;
+}
+
+.compra-bloco {
+  margin-bottom: 20px;
+}
+
+.compra-bloco:last-child {
+  margin-bottom: 0;
+}
+
+.compra-cabecalho {
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
 .formulario input {
   padding: 8px 10px;
   border: 1px solid var(--cor-borda);

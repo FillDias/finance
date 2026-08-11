@@ -4,6 +4,7 @@ class Cartao < ApplicationRecord
   # Saldo Herdado is owned data with no meaning outside its Cartão, not a shared
   # reference other records point to.
   has_many :saldos_herdados, dependent: :destroy
+  has_many :compras, dependent: :destroy
 
   validates :nome, presence: true
   validates :limite_total, presence: true, numericality: { greater_than: 0 }

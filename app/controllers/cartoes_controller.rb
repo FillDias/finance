@@ -10,6 +10,8 @@ class CartoesController < ApplicationController
   def show
     @saldos_herdados = @cartao.saldos_herdados.order(mes_referencia: :desc)
     @novo_saldo_herdado = SaldoHerdado.new(cartao_id: @cartao.id)
+    @compras = @cartao.compras.includes(:parcelas).order(data_compra: :desc)
+    @nova_compra = Compra.new
   end
 
   def create
