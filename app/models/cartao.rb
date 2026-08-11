@@ -5,6 +5,8 @@ class Cartao < ApplicationRecord
   # reference other records point to.
   has_many :saldos_herdados, dependent: :destroy
   has_many :compras, dependent: :destroy
+  has_many :parcelas, through: :compras
+  has_many :fatura_pagamentos, dependent: :destroy
 
   validates :nome, presence: true
   validates :limite_total, presence: true, numericality: { greater_than: 0 }

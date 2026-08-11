@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_11_103358) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_11_112120) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -65,6 +65,17 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_103358) do
     t.index ["data"], name: "index_despesas_on_data"
   end
 
+  create_table "fatura_pagamentos", force: :cascade do |t|
+    t.bigint "cartao_id", null: false
+    t.date "mes_referencia", null: false
+    t.decimal "valor_pago", precision: 10, scale: 2, null: false
+    t.date "data_pagamento", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cartao_id", "mes_referencia"], name: "index_fatura_pagamentos_on_cartao_id_and_mes_referencia", unique: true
+    t.index ["cartao_id"], name: "index_fatura_pagamentos_on_cartao_id"
+  end
+
   create_table "parcelas", force: :cascade do |t|
     t.string "origem_type", null: false
     t.bigint "origem_id", null: false
@@ -102,5 +113,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_103358) do
   add_foreign_key "cartoes", "credores"
   add_foreign_key "compras", "cartoes"
   add_foreign_key "despesas", "categorias"
+  add_foreign_key "fatura_pagamentos", "cartoes"
   add_foreign_key "saldos_herdados", "cartoes"
 end

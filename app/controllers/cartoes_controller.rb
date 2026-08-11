@@ -12,6 +12,9 @@ class CartoesController < ApplicationController
     @novo_saldo_herdado = SaldoHerdado.new(cartao_id: @cartao.id)
     @compras = @cartao.compras.includes(:parcelas).order(data_compra: :desc)
     @nova_compra = Compra.new
+    @faturas = meses_com_fatura.map { |mes| FaturaProjetadaQuery.call(cartao: @cartao, mes: mes) }
+    @saldo_restante = SaldoRestanteQuery.call(cartao: @cartao)
+    @utilizacao_limite = UtilizacaoLimiteQuery.call(cartao: @cartao)
   end
 
   def create
@@ -47,6 +50,12 @@ class CartoesController < ApplicationController
 
   def set_cartao
     @cartao = Cartao.find(params[:id])
+  end
+
+  def meses_com_fatura
+    meses_do_saldo_herdado = @cartao.saldos_herdados.pluck(:mes_referencia)
+    meses_das_parcelas = @cartao.parcelas.pluck(:data_vencimento).map(&:beginning_of_month)
+    (meses_do_saldo_herdado + meses_das_parcelas).uniq.sort
   end
 
   def cartao_params

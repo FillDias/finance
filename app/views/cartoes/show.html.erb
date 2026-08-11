@@ -9,6 +9,64 @@
   </p>
 </div>
 
+<section>
+  <h2>Resumo</h2>
+  <ul class="lista-totais">
+    <li><span>Saldo restante</span><strong class="cor-negativa"><%= moeda(@saldo_restante) %></strong></li>
+    <li>
+      <span>Utilização do limite</span>
+      <strong><%= number_to_percentage(@utilizacao_limite * 100, precision: 1) %></strong>
+      <div class="barra-limite">
+        <div class="barra-limite-preenchida" style="width: <%= [ @utilizacao_limite * 100, 100 ].min %>%"></div>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<section>
+  <h2>Fatura projetada por mês</h2>
+  <% if @faturas.empty? %>
+    <p class="vazio">Nenhuma fatura projetada ainda para este cartão.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Mês</th>
+          <th>Saldo herdado</th>
+          <th>Parcelas</th>
+          <th>Total</th>
+          <th>Situação</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @faturas.each do |fatura| %>
+          <tr>
+            <td><%= fatura.mes.strftime("%m/%Y") %></td>
+            <td class="valor"><%= moeda(fatura.saldo_herdado_valor) %></td>
+            <td class="valor"><%= moeda(fatura.parcelas_valor) %></td>
+            <td class="valor"><%= moeda(fatura.total) %></td>
+            <% if fatura.paga? %>
+              <td>Paga em <%= fatura.data_pagamento.strftime("%d/%m/%Y") %> (<%= moeda(fatura.valor_pago) %>)</td>
+              <td></td>
+            <% else %>
+              <td>Pendente</td>
+              <td class="acoes">
+                <%= form_with url: cartao_pagar_fatura_path(@cartao), scope: :fatura, local: true, class: "formulario-inline" do |f| %>
+                  <%= f.hidden_field :mes_referencia, value: fatura.mes %>
+                  <%= f.number_field :valor_pago, step: "0.01", min: "0.01", placeholder: "Valor pago", value: fatura.total, required: true %>
+                  <%= f.date_field :data_pagamento, required: true %>
+                  <%= f.submit "Marcar como paga" %>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>
+
 <section class="formulario-secao">
   <h2>Lançar saldo herdado</h2>
   <%= form_with model: @novo_saldo_herdado, url: saldos_herdados_path, local: true, class: "formulario" do |f| %>

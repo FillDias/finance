@@ -201,6 +201,24 @@ section h2 {
   color: var(--cor-positivo);
 }
 
+.lista-totais strong.cor-negativa {
+  color: var(--cor-negativo);
+}
+
+.barra-limite {
+  width: 200px;
+  height: 8px;
+  background: var(--cor-borda);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.barra-limite-preenchida {
+  height: 100%;
+  background: var(--cor-negativo);
+}
+
 .formulario .campo {
   margin-bottom: 14px;
   display: flex;
