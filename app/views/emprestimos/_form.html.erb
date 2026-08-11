@@ -1,0 +1,34 @@
+<%= form_with model: emprestimo, url: emprestimos_path, local: true, class: "formulario" do |f| %>
+  <% if erros.present? %>
+    <div class="form-erros">
+      <ul>
+        <% erros.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :nome, "Nome" %>
+    <%= f.text_field :nome, required: true, placeholder: "Financiamento do carro, Consignado..." %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :credor_id, "Credor" %>
+    <%= f.collection_select :credor_id, credores, :id, :nome, prompt: "Selecione" %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :valor_total, "Valor total" %>
+    <%= f.number_field :valor_total, step: "0.01", min: "0.01", required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :cronograma_texto, "Cronograma de parcelas" %>
+    <%= f.text_area :cronograma_texto, rows: 8, required: true, placeholder: "2026-08-15,450.00\n2026-09-15,450.00\n2026-10-15,450.00" %>
+    <small>Uma parcela por linha, no formato <code>data,valor</code> (ex.: <code>2026-08-15,450.00</code>).</small>
+  </div>
+
+  <%= f.submit "Criar empréstimo" %>
+<% end %>

@@ -28,6 +28,12 @@ Rails.application.routes.draw do
   get "saldos-herdados/importar", to: "saldos_herdados#novo_importar", as: :novo_importar_saldo_herdado
   post "saldos-herdados/importar", to: "saldos_herdados#importar", as: :importar_saldos_herdados
 
-  get "emprestimos", to: "emprestimos#index"
+  resources :emprestimos, only: [ :index, :show, :create ]
+  resources :parcelas, only: [] do
+    member do
+      patch :pagar
+    end
+  end
+
   get "exportacoes", to: "exportacoes#index"
 end

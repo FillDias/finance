@@ -1,6 +1,8 @@
 require "csv"
 
 class ImportarSaldoHerdado < ApplicationService
+  include ParseiaValorEData
+
   COLUNAS_ESPERADAS = %w[credor cartao mes_referencia valor_total].freeze
 
   def initialize(conteudo_csv:)
@@ -62,20 +64,6 @@ class ImportarSaldoHerdado < ApplicationService
     return "Linha #{numero_da_linha}: #{saldo.errors.full_messages.join('; ')}" unless saldo.valid?
 
     saldo.save!
-    nil
-  end
-
-  def parsear_data(valor)
-    texto = valor.to_s.strip
-    texto = "#{texto}-01" if texto.match?(/\A\d{4}-\d{2}\z/)
-    Date.parse(texto)
-  rescue ArgumentError, TypeError
-    nil
-  end
-
-  def parsear_valor(valor)
-    Float(valor.to_s.strip)
-  rescue ArgumentError, TypeError
     nil
   end
 end

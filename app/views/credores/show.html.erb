@@ -35,7 +35,30 @@
 
 <section>
   <h2>Empréstimos</h2>
-  <p class="vazio">Módulo de Empréstimos ainda não implementado.</p>
+  <% if @emprestimos.empty? %>
+    <p class="vazio">Nenhum empréstimo cadastrado para este credor.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Valor total</th>
+          <th>Parcelas</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @emprestimos.each do |emprestimo| %>
+          <tr>
+            <td><%= emprestimo.nome %></td>
+            <td class="valor"><%= moeda(emprestimo.valor_total) %></td>
+            <td><%= emprestimo.parcelas.count %></td>
+            <td class="acoes"><%= link_to "Ver parcelas", emprestimo_path(emprestimo) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
 </section>
 
 <%= link_to "Voltar", credores_path, class: "link-voltar" %>

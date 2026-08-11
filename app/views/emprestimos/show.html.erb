@@ -1,0 +1,46 @@
+<% content_for :title, @emprestimo.nome %>
+<div class="page-header">
+  <h1><%= @emprestimo.nome %></h1>
+  <p class="subtitulo">
+    <%= link_to @emprestimo.credor.nome, credor_path(@emprestimo.credor) %> · Valor total <%= moeda(@emprestimo.valor_total) %>
+  </p>
+</div>
+
+<section>
+  <h2>Parcelas</h2>
+  <% if @parcelas.empty? %>
+    <p class="vazio">Nenhuma parcela cadastrada.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Vencimento</th>
+          <th>Valor</th>
+          <th>Situação</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @parcelas.each do |parcela| %>
+          <tr>
+            <td><%= parcela.data_vencimento.strftime("%d/%m/%Y") %></td>
+            <td class="valor"><%= moeda(parcela.valor) %></td>
+            <td><%= parcela.status_label %></td>
+            <td class="acoes">
+              <% if parcela.paga? %>
+                Paga em <%= parcela.data_pagamento&.strftime("%d/%m/%Y") %>
+              <% else %>
+                <%= form_with url: pagar_parcela_path(parcela), method: :patch, local: true, class: "formulario-inline" do |f| %>
+                  <%= f.date_field :data_pagamento, value: Date.current %>
+                  <%= f.submit "Marcar como paga" %>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>
+
+<%= link_to "Voltar", emprestimos_path, class: "link-voltar" %>

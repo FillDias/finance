@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_11_184428) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_11_214058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,6 +68,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_184428) do
     t.index ["data"], name: "index_despesas_on_data"
   end
 
+  create_table "emprestimos", force: :cascade do |t|
+    t.string "nome", null: false
+    t.bigint "credor_id", null: false
+    t.decimal "valor_total", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["credor_id"], name: "index_emprestimos_on_credor_id"
+  end
+
   create_table "fatura_pagamentos", force: :cascade do |t|
     t.bigint "cartao_id", null: false
     t.date "mes_referencia", null: false
@@ -117,6 +126,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_184428) do
   add_foreign_key "compras", "cartoes"
   add_foreign_key "compras", "categorias"
   add_foreign_key "despesas", "categorias"
+  add_foreign_key "emprestimos", "credores"
   add_foreign_key "fatura_pagamentos", "cartoes"
   add_foreign_key "saldos_herdados", "cartoes"
 end

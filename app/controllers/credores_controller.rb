@@ -8,6 +8,7 @@ class CredoresController < ApplicationController
 
   def show
     @cartoes = @credor.cartoes.order(:nome)
+    @emprestimos = @credor.emprestimos.order(:nome)
   end
 
   def create
