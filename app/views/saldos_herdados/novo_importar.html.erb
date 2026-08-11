@@ -1,0 +1,34 @@
+<% content_for :title, "Importar saldo herdado" %>
+<div class="page-header">
+  <h1>Importar saldo herdado</h1>
+  <p class="subtitulo">Um arquivo CSV cobrindo vários credores e cartões de uma vez.</p>
+</div>
+
+<section class="formulario-secao">
+  <% if @erros.present? %>
+    <div class="form-erros">
+      <ul>
+        <% @erros.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with url: importar_saldos_herdados_path, method: :post, local: true, multipart: true, class: "formulario" do |f| %>
+    <div class="campo">
+      <%= f.label :arquivo, "Arquivo CSV" %>
+      <%= f.file_field :arquivo, accept: ".csv", required: true %>
+    </div>
+
+    <%= f.submit "Importar" %>
+  <% end %>
+
+  <p class="ajuda">
+    Colunas esperadas, nesta ordem: <code>credor,cartao,mes_referencia,valor_total</code>.
+    O credor e o cartão precisam já estar cadastrados. <code>mes_referencia</code> aceita <code>AAAA-MM</code> ou <code>AAAA-MM-DD</code>.
+    Se qualquer linha tiver um problema, nada é importado — corrija o arquivo e envie de novo.
+  </p>
+</section>
+
+<%= link_to "Voltar para Cartões", cartoes_path, class: "link-voltar" %>

@@ -1,5 +1,6 @@
 class Cartao < ApplicationRecord
   belongs_to :credor
+  has_many :saldos_herdados, dependent: :destroy
 
   validates :nome, presence: true
   validates :limite_total, presence: true, numericality: { greater_than: 0 }

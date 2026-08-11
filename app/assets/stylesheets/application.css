@@ -138,6 +138,29 @@ body {
   font-size: 0.85rem;
 }
 
+.formulario-inline {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.formulario-inline input {
+  padding: 4px 6px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  width: 110px;
+}
+
+.formulario-inline input[type="submit"] {
+  width: auto;
+  background: var(--cor-positivo);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
 section {
   background: var(--cor-superficie);
   border: 1px solid var(--cor-borda);

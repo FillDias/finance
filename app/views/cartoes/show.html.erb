@@ -1,0 +1,82 @@
+<% content_for :title, @cartao.nome %>
+<div class="page-header">
+  <h1><%= @cartao.nome %></h1>
+  <p class="subtitulo">
+    <%= link_to @cartao.credor.nome, credor_path(@cartao.credor) %> ·
+    Limite <%= moeda(@cartao.limite_total) %> ·
+    Fechamento dia <%= @cartao.dia_fechamento %> · Vencimento dia <%= @cartao.dia_vencimento %> ·
+    Data de corte <%= @cartao.data_corte.strftime("%d/%m/%Y") %>
+  </p>
+</div>
+
+<section class="formulario-secao">
+  <h2>Lançar saldo herdado</h2>
+  <%= form_with model: @novo_saldo_herdado, url: saldos_herdados_path, local: true, class: "formulario" do |f| %>
+    <% if @novo_saldo_herdado.errors.any? %>
+      <div class="form-erros">
+        <ul>
+          <% @novo_saldo_herdado.errors.full_messages.each do |mensagem| %>
+            <li><%= mensagem %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= f.hidden_field :cartao_id %>
+
+    <div class="campo">
+      <%= f.label :mes_referencia, "Mês de referência" %>
+      <%= f.date_field :mes_referencia, required: true %>
+    </div>
+
+    <div class="campo">
+      <%= f.label :valor_total, "Valor total da fatura" %>
+      <%= f.number_field :valor_total, step: "0.01", min: "0.01", required: true %>
+    </div>
+
+    <%= f.submit "Lançar" %>
+  <% end %>
+
+  <p class="ajuda"><%= link_to "Importar planilha de saldo herdado (todos os cartões)", novo_importar_saldo_herdado_path %></p>
+</section>
+
+<section>
+  <h2>Saldo herdado por mês</h2>
+  <% if @saldos_herdados.empty? %>
+    <p class="vazio">Nenhum saldo herdado lançado para este cartão.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Mês</th>
+          <th>Valor previsto</th>
+          <th>Situação</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @saldos_herdados.each do |saldo| %>
+          <tr>
+            <td><%= saldo.mes_referencia.strftime("%m/%Y") %></td>
+            <td class="valor"><%= moeda(saldo.valor_total) %></td>
+            <% if saldo.quitado_antecipadamente? %>
+              <td>Quitado em <%= saldo.data_pagamento.strftime("%d/%m/%Y") %> (<%= moeda(saldo.valor_pago) %>)</td>
+              <td></td>
+            <% else %>
+              <td>Pendente</td>
+              <td class="acoes">
+                <%= form_with url: quitar_saldo_herdado_path(saldo), method: :patch, local: true, class: "formulario-inline" do |f| %>
+                  <%= f.number_field :valor_pago, step: "0.01", min: "0.01", placeholder: "Valor pago", required: true %>
+                  <%= f.date_field :data_pagamento, required: true %>
+                  <%= f.submit "Quitar" %>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>
+
+<%= link_to "Voltar", cartoes_path, class: "link-voltar" %>

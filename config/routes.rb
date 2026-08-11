@@ -14,8 +14,17 @@ Rails.application.routes.draw do
   resources :rendas, path: "receitas", only: [ :index, :create, :edit, :update, :destroy ]
   resources :despesas, only: [ :index, :create, :edit, :update, :destroy ]
   resources :categorias, only: [ :index, :create, :edit, :update, :destroy ]
-  resources :cartoes, only: [ :index, :create, :edit, :update ]
+  resources :cartoes, only: [ :index, :show, :create, :edit, :update ]
   resources :credores, only: [ :index, :show, :create, :edit, :update ]
+
+  resources :saldos_herdados, only: [ :create ] do
+    member do
+      patch :quitar
+    end
+  end
+  get "saldos-herdados/importar", to: "saldos_herdados#novo_importar", as: :novo_importar_saldo_herdado
+  post "saldos-herdados/importar", to: "saldos_herdados#importar", as: :importar_saldos_herdados
+
   get "emprestimos", to: "emprestimos#index"
   get "exportacoes", to: "exportacoes#index"
 end

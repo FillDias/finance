@@ -1,10 +1,15 @@
 class CartoesController < ApplicationController
-  before_action :set_cartao, only: [ :edit, :update ]
+  before_action :set_cartao, only: [ :show, :edit, :update ]
 
   def index
     @cartao = Cartao.new
     @credores = Credor.order(:nome)
     @cartoes = Cartao.includes(:credor).order(:nome)
+  end
+
+  def show
+    @saldos_herdados = @cartao.saldos_herdados.order(mes_referencia: :desc)
+    @novo_saldo_herdado = SaldoHerdado.new(cartao_id: @cartao.id)
   end
 
   def create

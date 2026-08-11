@@ -22,4 +22,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.irregular "categoria", "categorias"
   inflect.irregular "credor", "credores"
   inflect.irregular "cartao", "cartoes"
+  inflect.irregular "saldo_herdado", "saldos_herdados"
 end
