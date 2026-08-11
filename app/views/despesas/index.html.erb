@@ -25,7 +25,7 @@
 
 <section class="formulario-secao">
   <h2>Nova despesa</h2>
-  <%= render "form", despesa: @despesa, categorias: @categorias %>
+  <%= render "form", despesa: @despesa, categorias: @categorias, permitir_cartao: true, cartoes: @cartoes %>
   <p class="ajuda"><%= link_to "Gerenciar categorias", categorias_path %></p>
 </section>
 
@@ -47,17 +47,21 @@
         </tr>
       </thead>
       <tbody>
-        <% @despesas.each do |despesa| %>
+        <% @despesas.each do |item| %>
           <tr>
-            <td><%= despesa.data.strftime("%d/%m/%Y") %></td>
-            <td><%= despesa.categoria.nome %></td>
-            <td><%= despesa.tipo_label %></td>
-            <td><%= despesa.forma_pagamento_label %></td>
-            <td><%= despesa.dia_vencimento ? "dia #{despesa.dia_vencimento}" : "—" %></td>
-            <td class="valor"><%= moeda(despesa.valor) %></td>
+            <td><%= item.data.strftime("%d/%m/%Y") %></td>
+            <td><%= item.categoria_nome %></td>
+            <td><%= item.tipo_label %></td>
+            <td><%= item.forma_pagamento_label %></td>
+            <td><%= item.despesa? && item.registro.dia_vencimento ? "dia #{item.registro.dia_vencimento}" : "—" %></td>
+            <td class="valor"><%= moeda(item.valor) %></td>
             <td class="acoes">
-              <%= link_to "Editar", edit_despesa_path(despesa) %>
-              <%= button_to "Excluir", despesa_path(despesa), method: :delete, data: { turbo_confirm: "Remover este lançamento?" }, class: "link-excluir" %>
+              <% if item.despesa? %>
+                <%= link_to "Editar", edit_despesa_path(item.registro) %>
+                <%= button_to "Excluir", despesa_path(item.registro), method: :delete, data: { turbo_confirm: "Remover este lançamento?" }, class: "link-excluir" %>
+              <% else %>
+                <%= link_to "Ver no cartão", cartao_path(item.registro.cartao) %>
+              <% end %>
             </td>
           </tr>
         <% end %>

@@ -6,13 +6,39 @@ class DespesasFiltradas < ApplicationQuery
   end
 
   def call
-    relacao = Despesa.includes(:categoria).order(data: :desc)
-    relacao = relacao.where(categoria_id: @categoria_id) if @categoria_id.present?
-    relacao = relacao.where(data: periodo) if periodo
-    relacao.to_a
+    (despesas_listadas + compras_listadas).sort_by(&:data).reverse
   end
 
   private
+
+  def despesas_listadas
+    relacao = Despesa.includes(:categoria)
+    relacao = relacao.where(categoria_id: @categoria_id) if @categoria_id.present?
+    relacao = relacao.where(data: periodo) if periodo
+
+    relacao.map do |despesa|
+      DespesaListada.new(
+        data: despesa.data, categoria_nome: despesa.categoria.nome, tipo_label: despesa.tipo_label,
+        forma_pagamento_label: despesa.forma_pagamento_label, valor: despesa.valor, registro: despesa
+      )
+    end
+  end
+
+  # Compras com categoria são as que vieram de uma Despesa paga no cartão
+  # (ver CriarDespesa / ticket #9) — aparecem aqui em vez de num registro
+  # Despesa separado, pra não contar o gasto duas vezes.
+  def compras_listadas
+    relacao = Compra.includes(:categoria, :cartao).where.not(categoria_id: nil)
+    relacao = relacao.where(categoria_id: @categoria_id) if @categoria_id.present?
+    relacao = relacao.where(data_compra: periodo) if periodo
+
+    relacao.map do |compra|
+      DespesaListada.new(
+        data: compra.data_compra, categoria_nome: compra.categoria.nome, tipo_label: compra.tipo_label,
+        forma_pagamento_label: "Cartão #{compra.cartao.nome}", valor: compra.valor_total, registro: compra
+      )
+    end
+  end
 
   def periodo
     return nil if @data_inicio.blank? && @data_fim.blank?

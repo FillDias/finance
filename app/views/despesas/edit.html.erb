@@ -4,6 +4,6 @@
 </div>
 
 <section class="formulario-secao">
-  <%= render "form", despesa: @despesa, categorias: @categorias %>
+  <%= render "form", despesa: @despesa, categorias: @categorias, permitir_cartao: false, cartoes: nil %>
   <%= link_to "Voltar", despesas_path, class: "link-voltar" %>
 </section>

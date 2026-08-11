@@ -31,13 +31,36 @@
 
   <div class="campo">
     <%= f.label :forma_pagamento, "Forma de pagamento" %>
-    <%= f.select :forma_pagamento, Despesa::FORMA_PAGAMENTO_LABEL.map { |valor, rotulo| [ rotulo, valor ] }, prompt: "Selecione" %>
+    <% opcoes_forma_pagamento = Despesa::FORMA_PAGAMENTO_LABEL.map { |valor, rotulo| [ rotulo, valor ] } %>
+    <% opcoes_forma_pagamento += [ [ "Cartão", "cartao" ] ] if permitir_cartao %>
+    <%= f.select :forma_pagamento, opcoes_forma_pagamento, prompt: "Selecione" %>
   </div>
 
   <div class="campo">
     <%= f.label :dia_vencimento, "Dia de vencimento (apenas para despesas fixas)" %>
     <%= f.number_field :dia_vencimento, min: 1, max: 31 %>
   </div>
+
+  <% if permitir_cartao %>
+    <%# Despesa não tem cartao_id/parcelado/numero_parcelas como atributos —
+        são repassados soltos pro CriarDespesa delegar pro CriarCompraNoCartao
+        (ver ticket #9), por isso usamos tags livres em vez de f.collection_select/f.check_box. %>
+    <div class="campo">
+      <label for="despesa_cartao_id">Cartão (apenas se a forma de pagamento for Cartão)</label>
+      <%= select_tag "despesa[cartao_id]", options_from_collection_for_select(cartoes, :id, :nome), include_blank: true, id: "despesa_cartao_id" %>
+    </div>
+
+    <div class="campo campo-checkbox">
+      <%= hidden_field_tag "despesa[parcelado]", "0", id: nil %>
+      <%= check_box_tag "despesa[parcelado]", "1", false, id: "despesa_parcelado" %>
+      <label for="despesa_parcelado">Parcelada</label>
+    </div>
+
+    <div class="campo">
+      <label for="despesa_numero_parcelas">Número de parcelas (se parcelada)</label>
+      <%= number_field_tag "despesa[numero_parcelas]", nil, min: 2, id: "despesa_numero_parcelas" %>
+    </div>
+  <% end %>
 
   <%= f.submit despesa.persisted? ? "Salvar alterações" : "Registrar despesa" %>
 <% end %>

@@ -66,4 +66,26 @@ RSpec.describe CriarCompraNoCartao do
 
     expect(resultado).to be_erro
   end
+
+  it "aceita categoria e tipo opcionais, para o caso de vir de uma Despesa paga no cartão" do
+    categoria = Categoria.create!(nome: "Alimentação")
+
+    resultado = CriarCompraNoCartao.call(
+      cartao_id: cartao.id, data_compra: Date.new(2026, 7, 10), valor_total: 100, parcelado: false,
+      categoria_id: categoria.id, tipo: "variavel"
+    )
+
+    expect(resultado).to be_sucesso
+    expect(resultado.valor.categoria).to eq(categoria)
+    expect(resultado.valor.variavel?).to be true
+  end
+
+  it "cria a compra sem categoria e sem tipo quando lançada diretamente no cartão" do
+    resultado = CriarCompraNoCartao.call(
+      cartao_id: cartao.id, data_compra: Date.new(2026, 7, 10), valor_total: 100, parcelado: false
+    )
+
+    expect(resultado.valor.categoria).to be_nil
+    expect(resultado.valor.tipo).to be_nil
+  end
 end

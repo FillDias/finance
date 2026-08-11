@@ -3,6 +3,7 @@ class DespesasController < ApplicationController
 
   def index
     @despesa = Despesa.new
+    @cartoes = Cartao.order(:nome)
     carregar_lista_filtrada
   end
 
@@ -11,10 +12,13 @@ class DespesasController < ApplicationController
 
     if resultado.sucesso?
       redirect_to despesas_path, notice: "Despesa registrada."
-    else
+    elsif resultado.valor.is_a?(Despesa)
       @despesa = resultado.valor
+      @cartoes = Cartao.order(:nome)
       carregar_lista_filtrada
       render :index, status: :unprocessable_entity
+    else
+      redirect_to despesas_path, alert: resultado.erros.join(", ")
     end
   end
 
@@ -23,7 +27,7 @@ class DespesasController < ApplicationController
   end
 
   def update
-    resultado = AtualizarDespesa.call(despesa: @despesa, **despesa_params)
+    resultado = AtualizarDespesa.call(despesa: @despesa, **despesa_params_edicao)
 
     if resultado.sucesso?
       redirect_to despesas_path, notice: "Despesa atualizada."
@@ -54,6 +58,12 @@ class DespesasController < ApplicationController
   end
 
   def despesa_params
+    params.require(:despesa)
+          .permit(:valor, :data, :categoria_id, :tipo, :forma_pagamento, :dia_vencimento, :cartao_id, :parcelado, :numero_parcelas)
+          .to_h.symbolize_keys
+  end
+
+  def despesa_params_edicao
     params.require(:despesa).permit(:valor, :data, :categoria_id, :tipo, :forma_pagamento, :dia_vencimento).to_h.symbolize_keys
   end
 end

@@ -1,10 +1,12 @@
 class CriarCompraNoCartao < ApplicationService
-  def initialize(cartao_id:, data_compra:, valor_total:, parcelado:, numero_parcelas: nil)
+  def initialize(cartao_id:, data_compra:, valor_total:, parcelado:, numero_parcelas: nil, categoria_id: nil, tipo: nil)
     @cartao_id = cartao_id
     @data_compra_bruta = data_compra
     @valor_total = valor_total
     @parcelado = ActiveModel::Type::Boolean.new.cast(parcelado)
     @numero_parcelas = @parcelado ? numero_parcelas : 1
+    @categoria_id = categoria_id
+    @tipo = tipo
   end
 
   def call
@@ -22,7 +24,8 @@ class CriarCompraNoCartao < ApplicationService
 
     compra = Compra.new(
       cartao: cartao, data_compra: data_compra, valor_total: @valor_total,
-      parcelado: @parcelado, numero_parcelas: @numero_parcelas
+      parcelado: @parcelado, numero_parcelas: @numero_parcelas,
+      categoria_id: @categoria_id, tipo: @tipo
     )
     return Resultado.erro(*compra.errors.full_messages, valor: compra) unless compra.valid?
 

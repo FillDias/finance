@@ -3,6 +3,10 @@ require "rails_helper"
 RSpec.describe DespesasFiltradas do
   let(:alimentacao) { Categoria.create!(nome: "Alimentação") }
   let(:transporte) { Categoria.create!(nome: "Transporte") }
+  let(:credor) { Credor.create!(nome: "Nubank") }
+  let(:cartao) do
+    Cartao.create!(nome: "Ultravioleta", credor: credor, limite_total: 5000, dia_fechamento: 5, dia_vencimento: 12, data_corte: Date.new(2026, 1, 1))
+  end
 
   before do
     Despesa.create!(valor: 50, data: Date.new(2026, 1, 10), categoria: alimentacao, tipo: :variavel, forma_pagamento: :dinheiro)
@@ -18,7 +22,7 @@ RSpec.describe DespesasFiltradas do
     resultado = DespesasFiltradas.call(categoria_id: alimentacao.id)
 
     expect(resultado.size).to eq(2)
-    expect(resultado).to all(have_attributes(categoria_id: alimentacao.id))
+    expect(resultado).to all(have_attributes(categoria_nome: "Alimentação"))
   end
 
   it "filtra por período" do
@@ -44,5 +48,42 @@ RSpec.describe DespesasFiltradas do
     resultado = DespesasFiltradas.call
 
     expect(resultado.map(&:data)).to eq(resultado.map(&:data).sort.reverse)
+  end
+
+  describe "Compras pagas no cartão (com categoria)" do
+    it "inclui uma Compra com categoria na listagem, marcada como não-despesa" do
+      resultado = CriarDespesa.call(
+        valor: 200, data: Date.new(2026, 4, 5), categoria_id: transporte.id, tipo: "variavel",
+        forma_pagamento: "cartao", cartao_id: cartao.id, parcelado: false
+      )
+      compra = resultado.valor
+
+      itens = DespesasFiltradas.call
+      item_da_compra = itens.find { |item| item.registro == compra }
+
+      expect(item_da_compra).not_to be_nil
+      expect(item_da_compra).not_to be_despesa
+      expect(item_da_compra.categoria_nome).to eq("Transporte")
+      expect(item_da_compra.forma_pagamento_label).to eq("Cartão Ultravioleta")
+      expect(item_da_compra.valor).to eq(200.to_d)
+    end
+
+    it "não inclui uma Compra sem categoria (lançada direto no cartão, fora do fluxo de Despesa)" do
+      CriarCompraNoCartao.call(cartao_id: cartao.id, data_compra: Date.new(2026, 4, 5), valor_total: 500, parcelado: false)
+
+      itens = DespesasFiltradas.call
+
+      expect(itens.size).to eq(3)
+    end
+
+    it "aparece exatamente uma vez, não duplicada como Despesa também" do
+      CriarDespesa.call(
+        valor: 200, data: Date.new(2026, 4, 5), categoria_id: transporte.id, tipo: "variavel",
+        forma_pagamento: "cartao", cartao_id: cartao.id, parcelado: false
+      )
+
+      expect(Despesa.count).to eq(3)
+      expect(DespesasFiltradas.call.size).to eq(4)
+    end
   end
 end

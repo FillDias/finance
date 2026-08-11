@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_11_112120) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_11_184428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -41,7 +41,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_112120) do
     t.integer "numero_parcelas", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "categoria_id"
+    t.integer "tipo"
     t.index ["cartao_id"], name: "index_compras_on_cartao_id"
+    t.index ["categoria_id"], name: "index_compras_on_categoria_id"
     t.index ["data_compra"], name: "index_compras_on_data_compra"
   end
 
@@ -112,6 +115,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_112120) do
 
   add_foreign_key "cartoes", "credores"
   add_foreign_key "compras", "cartoes"
+  add_foreign_key "compras", "categorias"
   add_foreign_key "despesas", "categorias"
   add_foreign_key "fatura_pagamentos", "cartoes"
   add_foreign_key "saldos_herdados", "cartoes"

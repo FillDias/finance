@@ -1,5 +1,8 @@
 class Compra < ApplicationRecord
+  include ClassificacaoFixaVariavel
+
   belongs_to :cartao
+  belongs_to :categoria, optional: true
   has_many :parcelas, as: :origem, dependent: :destroy
 
   validates :data_compra, presence: true
