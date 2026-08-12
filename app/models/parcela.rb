@@ -12,6 +12,10 @@ class Parcela < ApplicationRecord
     pendente? && data_vencimento < Date.current
   end
 
+  def origem_emprestimo?
+    origem.is_a?(Emprestimo)
+  end
+
   def status_label
     return "Atrasada" if atrasada?
 

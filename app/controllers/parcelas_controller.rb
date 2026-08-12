@@ -13,6 +13,6 @@ class ParcelasController < ApplicationController
   private
 
   def redirecionamento_apos_pagamento(parcela)
-    parcela.origem.is_a?(Emprestimo) ? emprestimo_path(parcela.origem) : root_path
+    parcela.origem_emprestimo? ? emprestimo_path(parcela.origem) : root_path
   end
 end
