@@ -24,7 +24,10 @@
         <% @tipos_investimento.each do |tipo| %>
           <tr>
             <td><%= tipo.nome %></td>
-            <td class="acoes"><%= link_to "Editar", edit_tipo_investimento_path(tipo) %></td>
+            <td class="acoes">
+              <%= link_to "Editar", edit_tipo_investimento_path(tipo) %>
+              <%= button_to "Excluir", tipo_investimento_path(tipo), method: :delete, data: { turbo_confirm: "Remover este tipo?" }, class: "link-excluir" %>
+            </td>
           </tr>
         <% end %>
       </tbody>

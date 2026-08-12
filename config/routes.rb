@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   get "saldos-herdados/importar", to: "saldos_herdados#novo_importar", as: :novo_importar_saldo_herdado
   post "saldos-herdados/importar", to: "saldos_herdados#importar", as: :importar_saldos_herdados
 
-  resources :tipos_investimento, only: [ :index, :create, :edit, :update ]
+  resources :tipos_investimento, only: [ :index, :create, :edit, :update, :destroy ]
   resources :investimentos, only: [ :index, :create, :edit, :update ] do
     member do
       patch :resgatar

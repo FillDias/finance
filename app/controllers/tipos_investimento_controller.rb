@@ -1,5 +1,5 @@
 class TiposInvestimentoController < ApplicationController
-  before_action :set_tipo_investimento, only: [ :edit, :update ]
+  before_action :set_tipo_investimento, only: [ :edit, :update, :destroy ]
 
   def index
     @tipo_investimento = TipoInvestimento.new
@@ -28,6 +28,16 @@ class TiposInvestimentoController < ApplicationController
       redirect_to tipos_investimento_path, notice: "Tipo de investimento atualizado."
     else
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    resultado = ExcluirTipoInvestimento.call(tipo_investimento: @tipo_investimento)
+
+    if resultado.sucesso?
+      redirect_to tipos_investimento_path, notice: "Tipo de investimento removido."
+    else
+      redirect_to tipos_investimento_path, alert: resultado.erros.join(", ")
     end
   end
 
