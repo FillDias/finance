@@ -7,3 +7,9 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+[
+  "CDB", "CDI", "Poupança", "Tesouro Direto", "Ações", "Fundos Imobiliários", "Reserva de Emergência", "Outro"
+].each do |nome|
+  TipoInvestimento.find_or_create_by!(nome: nome)
+end

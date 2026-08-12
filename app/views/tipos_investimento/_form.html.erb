@@ -1,0 +1,18 @@
+<%= form_with model: tipo_investimento, url: (tipo_investimento.persisted? ? tipo_investimento_path(tipo_investimento) : tipos_investimento_path), local: true, class: "formulario" do |f| %>
+  <% if tipo_investimento.errors.any? %>
+    <div class="form-erros">
+      <ul>
+        <% tipo_investimento.errors.full_messages.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :nome, "Nome" %>
+    <%= f.text_field :nome, required: true, placeholder: "CDB, Tesouro Direto..." %>
+  </div>
+
+  <%= f.submit tipo_investimento.persisted? ? "Salvar alterações" : "Criar tipo" %>
+<% end %>

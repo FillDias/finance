@@ -1,0 +1,54 @@
+<% content_for :title, "Investimentos" %>
+<div class="page-header">
+  <h1>Investimentos</h1>
+</div>
+
+<section class="formulario-secao">
+  <h2>Novo investimento</h2>
+  <%= render "form", investimento: @investimento, tipos_investimento: @tipos_investimento %>
+  <p class="ajuda"><%= link_to "Gerenciar tipos de investimento", tipos_investimento_path %></p>
+</section>
+
+<section>
+  <h2>Investimentos cadastrados</h2>
+  <% if @investimentos.empty? %>
+    <p class="vazio">Nenhum investimento cadastrado ainda.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Instituição</th>
+          <th>Tipo</th>
+          <th>Taxa</th>
+          <th>Vencimento</th>
+          <th>Situação</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @investimentos.each do |investimento| %>
+          <tr>
+            <td><%= investimento.instituicao %></td>
+            <td><%= investimento.tipo_investimento.nome %></td>
+            <td><%= number_with_precision(investimento.taxa_rendimento, precision: 3) %><%= investimento.periodicidade_taxa_label %></td>
+            <td><%= investimento.data_vencimento&.strftime("%d/%m/%Y") || "—" %></td>
+            <% if investimento.resgatado? %>
+              <td>Resgatado em <%= investimento.data_resgate.strftime("%d/%m/%Y") %> (<%= moeda(investimento.valor_resgatado) %>)</td>
+              <td class="acoes"><%= link_to "Editar", edit_investimento_path(investimento) %></td>
+            <% else %>
+              <td><%= investimento.status_label %></td>
+              <td class="acoes">
+                <%= link_to "Editar", edit_investimento_path(investimento) %>
+                <%= form_with url: resgatar_investimento_path(investimento), scope: :investimento, method: :patch, local: true, class: "formulario-inline" do |f| %>
+                  <%= f.number_field :valor_resgatado, step: "0.01", min: "0.01", placeholder: "Valor resgatado", required: true %>
+                  <%= f.date_field :data_resgate, required: true %>
+                  <%= f.submit "Resgatar" %>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>

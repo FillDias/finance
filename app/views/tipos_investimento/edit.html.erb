@@ -1,0 +1,9 @@
+<% content_for :title, "Editar tipo de investimento" %>
+<div class="page-header">
+  <h1>Editar tipo de investimento</h1>
+</div>
+
+<section class="formulario-secao">
+  <%= render "form", tipo_investimento: @tipo_investimento %>
+  <%= link_to "Voltar", tipos_investimento_path, class: "link-voltar" %>
+</section>

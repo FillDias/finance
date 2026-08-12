@@ -1,0 +1,35 @@
+<% content_for :title, "Tipos de investimento" %>
+<div class="page-header">
+  <h1>Tipos de investimento</h1>
+</div>
+
+<section class="formulario-secao">
+  <h2>Novo tipo</h2>
+  <%= render "form", tipo_investimento: @tipo_investimento %>
+</section>
+
+<section>
+  <h2>Tipos cadastrados</h2>
+  <% if @tipos_investimento.empty? %>
+    <p class="vazio">Nenhum tipo cadastrado ainda.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @tipos_investimento.each do |tipo| %>
+          <tr>
+            <td><%= tipo.nome %></td>
+            <td class="acoes"><%= link_to "Editar", edit_tipo_investimento_path(tipo) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</section>
+
+<%= link_to "Voltar para Investimentos", investimentos_path, class: "link-voltar" %>

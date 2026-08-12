@@ -23,4 +23,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.irregular "credor", "credores"
   inflect.irregular "cartao", "cartoes"
   inflect.irregular "saldo_herdado", "saldos_herdados"
+  inflect.irregular "tipo_investimento", "tipos_investimento"
 end

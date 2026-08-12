@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_11_214058) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_12_011737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -88,6 +88,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_214058) do
     t.index ["cartao_id"], name: "index_fatura_pagamentos_on_cartao_id"
   end
 
+  create_table "investimentos", force: :cascade do |t|
+    t.bigint "tipo_investimento_id", null: false
+    t.string "instituicao", null: false
+    t.decimal "taxa_rendimento", precision: 6, scale: 3, null: false
+    t.integer "periodicidade_taxa", default: 0, null: false
+    t.date "data_vencimento"
+    t.integer "status", default: 0, null: false
+    t.decimal "valor_resgatado", precision: 10, scale: 2
+    t.date "data_resgate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tipo_investimento_id"], name: "index_investimentos_on_tipo_investimento_id"
+  end
+
   create_table "parcelas", force: :cascade do |t|
     t.string "origem_type", null: false
     t.bigint "origem_id", null: false
@@ -122,11 +136,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_11_214058) do
     t.index ["cartao_id"], name: "index_saldos_herdados_on_cartao_id"
   end
 
+  create_table "tipos_investimento", force: :cascade do |t|
+    t.string "nome", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nome"], name: "index_tipos_investimento_on_nome", unique: true
+  end
+
   add_foreign_key "cartoes", "credores"
   add_foreign_key "compras", "cartoes"
   add_foreign_key "compras", "categorias"
   add_foreign_key "despesas", "categorias"
   add_foreign_key "emprestimos", "credores"
   add_foreign_key "fatura_pagamentos", "cartoes"
+  add_foreign_key "investimentos", "tipos_investimento"
   add_foreign_key "saldos_herdados", "cartoes"
 end

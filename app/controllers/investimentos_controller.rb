@@ -1,0 +1,62 @@
+class InvestimentosController < ApplicationController
+  before_action :set_investimento, only: [ :edit, :update, :resgatar ]
+
+  def index
+    @investimento = Investimento.new
+    @tipos_investimento = TipoInvestimento.order(:nome)
+    @investimentos = Investimento.includes(:tipo_investimento).order(:instituicao)
+  end
+
+  def create
+    resultado = CriarInvestimento.call(**investimento_params)
+
+    if resultado.sucesso?
+      redirect_to investimentos_path, notice: "Investimento criado."
+    else
+      @investimento = resultado.valor
+      @tipos_investimento = TipoInvestimento.order(:nome)
+      @investimentos = Investimento.includes(:tipo_investimento).order(:instituicao)
+      render :index, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    @tipos_investimento = TipoInvestimento.order(:nome)
+  end
+
+  def update
+    resultado = AtualizarInvestimento.call(investimento: @investimento, **investimento_params)
+
+    if resultado.sucesso?
+      redirect_to investimentos_path, notice: "Investimento atualizado."
+    else
+      @investimento = resultado.valor
+      @tipos_investimento = TipoInvestimento.order(:nome)
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def resgatar
+    resultado = ResgatarInvestimento.call(investimento: @investimento, **resgate_params)
+
+    if resultado.sucesso?
+      redirect_to investimentos_path, notice: "Investimento resgatado."
+    else
+      redirect_to investimentos_path, alert: resultado.erros.join(", ")
+    end
+  end
+
+  private
+
+  def set_investimento
+    @investimento = Investimento.find(params[:id])
+  end
+
+  def investimento_params
+    params.require(:investimento).permit(:tipo_investimento_id, :instituicao, :taxa_rendimento, :periodicidade_taxa, :data_vencimento).to_h.symbolize_keys
+  end
+
+  def resgate_params
+    params.require(:investimento).permit(:valor_resgatado, :data_resgate).to_h.symbolize_keys
+  end
+end

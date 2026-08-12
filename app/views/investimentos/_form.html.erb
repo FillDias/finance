@@ -1,0 +1,38 @@
+<%= form_with model: investimento, url: (investimento.persisted? ? investimento_path(investimento) : investimentos_path), local: true, class: "formulario" do |f| %>
+  <% if investimento.errors.any? %>
+    <div class="form-erros">
+      <ul>
+        <% investimento.errors.full_messages.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :tipo_investimento_id, "Tipo" %>
+    <%= f.collection_select :tipo_investimento_id, tipos_investimento, :id, :nome, prompt: "Selecione" %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :instituicao, "Instituição" %>
+    <%= f.text_field :instituicao, required: true, placeholder: "Nubank, XP, Banco do Brasil..." %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :taxa_rendimento, "Taxa de rendimento esperado" %>
+    <%= f.number_field :taxa_rendimento, step: "0.001", min: "0.001", required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :periodicidade_taxa, "Periodicidade da taxa" %>
+    <%= f.select :periodicidade_taxa, Investimento::PERIODICIDADE_LABEL.map { |valor, rotulo| [ rotulo, valor ] }, prompt: "Selecione" %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :data_vencimento, "Data de vencimento (quando aplicável)" %>
+    <%= f.date_field :data_vencimento %>
+  </div>
+
+  <%= f.submit investimento.persisted? ? "Salvar alterações" : "Criar investimento" %>
+<% end %>
