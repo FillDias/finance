@@ -7,7 +7,7 @@ Dashboard financeiro pessoal para um único usuário controlar entradas e saída
 ### Dívida e Obrigação
 
 **Obrigação**:
-Conceito guarda-chuva para qualquer valor a pagar com vencimento e status (pendente, paga, atrasada), independente da origem (Saldo Herdado, Parcela de Compra ou Parcela de Empréstimo). Sustenta o Painel (KPIs e próximos vencimentos) sem precisar de uma tela dedicada que junte cartões e empréstimos manualmente.
+Conceito guarda-chuva para qualquer valor a pagar com vencimento e status (pendente, paga, atrasada), de quatro origens possíveis: Saldo Herdado, Parcela de Compra, Parcela de Empréstimo, ou Despesa Fixa. Sustenta o Painel (KPIs e próximos vencimentos) sem precisar de uma tela dedicada que junte cartões e empréstimos manualmente. Despesa Fixa é a única origem sem estado "paga" persistido (ver Despesa) — nela, `data` é tratada como o vencimento, e o status é sempre pendente ou atrasada, nunca paga.
 _Avoid_: Dívida (usar Obrigação como termo técnico único)
 
 **Credor**:
@@ -63,7 +63,7 @@ Lançamento de entrada de dinheiro: valor, data e categoria/fonte (ex.: Salário
 _Avoid_: Entrada, receita
 
 **Despesa**:
-Lançamento de saída de dinheiro, classificado como Fixa ou Variável (rótulo, não uma diferença estrutural) e com uma forma de pagamento (Cartão específico, Débito, Boleto, PIX ou Dinheiro). Quando a forma de pagamento é um Cartão, a Despesa é a mesma linha que a Compra lançada nesse cartão — nunca duas linhas separadas. Despesa Fixa tem uma data de vencimento própria (dia do mês) e aparece nos próximos vencimentos.
+Lançamento de saída de dinheiro, classificado como Fixa ou Variável (rótulo, não uma diferença estrutural) e com uma forma de pagamento (Cartão específico, Débito, Boleto, PIX ou Dinheiro). Quando a forma de pagamento é um Cartão, a Despesa é a mesma linha que a Compra lançada nesse cartão — nunca duas linhas separadas. Despesa Fixa tem uma data de vencimento própria (dia do mês) e aparece nos próximos vencimentos. Ao contrário de Saldo Herdado e Parcela, Despesa não tem campo de pagamento — é lançada como um fato já resolvido. Como Obrigação, seu `data` é o vencimento e seu status nunca é "paga": some da lista de próximos vencimentos quando lançada, ficando só no histórico de Despesas.
 _Avoid_: Gasto, saída
 
 **Categoria**:
