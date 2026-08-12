@@ -43,4 +43,8 @@ Rails.application.routes.draw do
   end
 
   get "exportacoes", to: "exportacoes#index"
+
+  # Referência de como usar o chart_controller.js Stimulus (ver ADR 0005) —
+  # não é uma tela de produto.
+  get "exemplo-grafico", to: "exemplos#grafico", as: :exemplo_grafico
 end

@@ -1,0 +1,10 @@
+<% content_for :title, "Exemplo de gráfico" %>
+<div class="page-header">
+  <h1>Exemplo de gráfico</h1>
+  <p class="subtitulo">Demonstra o chart_controller.js Stimulus genérico (ver ADR 0005) — não é uma tela de produto.</p>
+</div>
+
+<section>
+  <h2>Renda por fonte</h2>
+  <div class="grafico" data-controller="chart" data-chart-option-value="<%= @opcao_grafico.to_json %>"></div>
+</section>

@@ -25,6 +25,15 @@ Rails.application.configure do
   config.action_controller.perform_caching = false
   config.cache_store = :null_store
 
+  # Sprockets' default file-based cache (tmp/cache/assets) uses File.rename
+  # for atomic writes, which assumes POSIX semantics. On Windows, concurrent
+  # first-time asset compilation (e.g. the first spec that renders a full
+  # layout) can race and raise Errno::EACCES. An in-memory cache sidesteps
+  # this entirely — fine for test, where nothing needs to persist to disk.
+  config.assets.configure do |env|
+    env.cache = Sprockets::Cache::MemoryStore.new
+  end
+
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable
 

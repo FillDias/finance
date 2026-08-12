@@ -64,6 +64,16 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
+  # Sprockets' default file-based cache (tmp/cache/assets) uses File.rename
+  # for atomic writes, which assumes POSIX semantics. On Windows, concurrent
+  # first-time asset compilation (a cold cache, e.g. right after a fresh
+  # checkout) can race and raise Errno::EACCES. An in-memory cache sidesteps
+  # this — it just means assets recompile on every server restart, which is
+  # already true in development.
+  config.assets.configure do |env|
+    env.cache = Sprockets::Cache::MemoryStore.new
+  end
+
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 

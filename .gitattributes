@@ -1,0 +1,2 @@
+# Vendored third-party JS — keep byte-for-byte as downloaded, no line-ending conversion.
+vendor/javascript/*.js -text
