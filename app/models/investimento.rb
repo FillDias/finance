@@ -2,6 +2,7 @@ class Investimento < ApplicationRecord
   include ValidarParPreenchido
 
   belongs_to :tipo_investimento
+  has_many :aportes, dependent: :destroy
 
   enum :periodicidade_taxa, { mensal: 0, anual: 1 }
   enum :status, { ativo: 0, resgatado: 1 }

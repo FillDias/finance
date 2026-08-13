@@ -29,10 +29,11 @@ Rails.application.routes.draw do
   post "saldos-herdados/importar", to: "saldos_herdados#importar", as: :importar_saldos_herdados
 
   resources :tipos_investimento, only: [ :index, :create, :edit, :update, :destroy ]
-  resources :investimentos, only: [ :index, :create, :edit, :update ] do
+  resources :investimentos, only: [ :index, :show, :create, :edit, :update ] do
     member do
       patch :resgatar
     end
+    resources :aportes, only: [ :create, :edit, :update, :destroy ]
   end
 
   resources :emprestimos, only: [ :index, :show, :create ]

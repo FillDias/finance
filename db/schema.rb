@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_12_011737) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_12_233450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "aportes", force: :cascade do |t|
+    t.bigint "investimento_id", null: false
+    t.decimal "valor", precision: 10, scale: 2, null: false
+    t.date "data", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["data"], name: "index_aportes_on_data"
+    t.index ["investimento_id"], name: "index_aportes_on_investimento_id"
+  end
 
   create_table "cartoes", force: :cascade do |t|
     t.string "nome", null: false
@@ -143,6 +153,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_12_011737) do
     t.index ["nome"], name: "index_tipos_investimento_on_nome", unique: true
   end
 
+  add_foreign_key "aportes", "investimentos"
   add_foreign_key "cartoes", "credores"
   add_foreign_key "compras", "cartoes"
   add_foreign_key "compras", "categorias"

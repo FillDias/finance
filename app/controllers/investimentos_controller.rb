@@ -1,10 +1,15 @@
 class InvestimentosController < ApplicationController
-  before_action :set_investimento, only: [ :edit, :update, :resgatar ]
+  before_action :set_investimento, only: [ :show, :edit, :update, :resgatar ]
 
   def index
     @investimento = Investimento.new
     @tipos_investimento = TipoInvestimento.order(:nome)
     @investimentos = Investimento.includes(:tipo_investimento).order(:instituicao)
+  end
+
+  def show
+    @aportes = @investimento.aportes.order(data: :desc)
+    @novo_aporte = Aporte.new
   end
 
   def create

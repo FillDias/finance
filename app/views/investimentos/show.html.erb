@@ -1,0 +1,57 @@
+<% content_for :title, @investimento.instituicao %>
+<div class="page-header">
+  <h1><%= @investimento.instituicao %></h1>
+  <p class="subtitulo">
+    <%= @investimento.tipo_investimento.nome %> ·
+    <%= number_with_precision(@investimento.taxa_rendimento, precision: 3) %><%= @investimento.periodicidade_taxa_label %> ·
+    <%= @investimento.status_label %>
+    <% if @investimento.data_vencimento %>
+      · Vencimento <%= @investimento.data_vencimento.strftime("%d/%m/%Y") %>
+    <% end %>
+  </p>
+</div>
+
+<% unless @investimento.resgatado? %>
+  <section class="formulario-secao">
+    <h2>Novo aporte</h2>
+    <%= render "aportes/form", investimento: @investimento, aporte: @novo_aporte %>
+  </section>
+<% end %>
+
+<section>
+  <h2>Aportes</h2>
+  <% if @aportes.empty? %>
+    <p class="vazio">Nenhum aporte lançado ainda.</p>
+  <% else %>
+    <table class="tabela-densa">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Valor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @aportes.each do |aporte| %>
+          <tr>
+            <td><%= aporte.data.strftime("%d/%m/%Y") %></td>
+            <td class="valor"><%= moeda(aporte.valor) %></td>
+            <td class="acoes">
+              <%= link_to "Editar", edit_investimento_aporte_path(@investimento, aporte) %>
+              <%= button_to "Excluir", investimento_aporte_path(@investimento, aporte), method: :delete, data: { turbo_confirm: "Remover este aporte?" }, class: "link-excluir" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Total aportado</td>
+          <td class="valor"><strong><%= moeda(@aportes.sum(&:valor)) %></strong></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  <% end %>
+</section>
+
+<%= link_to "Voltar", investimentos_path, class: "link-voltar" %>

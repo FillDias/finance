@@ -1,0 +1,23 @@
+<%= form_with model: [ investimento, aporte ], local: true, class: "formulario" do |f| %>
+  <% if aporte.errors.any? %>
+    <div class="form-erros">
+      <ul>
+        <% aporte.errors.full_messages.each do |mensagem| %>
+          <li><%= mensagem %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="campo">
+    <%= f.label :valor, "Valor do aporte" %>
+    <%= f.number_field :valor, step: "0.01", min: "0.01", required: true %>
+  </div>
+
+  <div class="campo">
+    <%= f.label :data, "Data" %>
+    <%= f.date_field :data, required: true %>
+  </div>
+
+  <%= f.submit aporte.persisted? ? "Salvar alterações" : "Registrar aporte" %>
+<% end %>
