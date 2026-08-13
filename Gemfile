@@ -62,3 +62,11 @@ group :development do
   gem "web-console"
 end
 
+group :test do
+  # System specs (ver spec/system) — só o Painel precisa de um driver com JS
+  # de verdade, pra verificar que o filtro atualiza via Turbo Frame sem dar
+  # reload de página inteira (ADR sobre Testing Decisions do ticket #12).
+  gem "capybara"
+  gem "selenium-webdriver"
+end
+

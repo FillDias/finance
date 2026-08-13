@@ -8,7 +8,24 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
 require 'rspec/rails'
+require 'capybara/rails'
+require 'capybara/rspec'
 # Add additional requires below this line. Rails is not loaded until this point!
+
+# Headless Chrome — o único jeito de testar de verdade que o filtro do
+# Painel atualiza via Turbo Frame sem reload de página inteira (rack_test
+# não executa o JS do Turbo). Selenium Manager (>= 4.6) baixa/gerencia o
+# chromedriver sozinho, contanto que o Chrome esteja instalado.
+Capybara.register_driver :selenium_chrome_headless do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument("--headless=new")
+  options.add_argument("--disable-gpu")
+  options.add_argument("--no-sandbox")
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+
+Capybara.default_driver = :rack_test
+Capybara.javascript_driver = :selenium_chrome_headless
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
