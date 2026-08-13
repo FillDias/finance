@@ -1,0 +1,6 @@
+<p class="kpi-comparacao">
+  <%= moeda(comparacao.anterior) %> mês anterior
+  <span class="<%= cor_variacao(comparacao.delta, aumento_e_bom: aumento_e_bom) %>">
+    (<%= comparacao.delta.positive? ? "+" : "" %><%= moeda(comparacao.delta) %><% if comparacao.percentual %>, <%= number_with_precision(comparacao.percentual, precision: 1) %>%<% end %>)
+  </span>
+</p>

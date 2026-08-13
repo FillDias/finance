@@ -1,5 +1,190 @@
 <% content_for :title, "Painel" %>
-<div class="page-placeholder">
+<div class="page-header">
   <h1>Painel</h1>
-  <p>Em construção.</p>
 </div>
+
+<section class="filtro-secao">
+  <h2>Filtrar</h2>
+  <%= form_with url: root_path, method: :get, local: true, class: "formulario formulario-filtro", data: { turbo_frame: "painel-conteudo" } do |f| %>
+    <div class="campo">
+      <%= f.label :mes, "Mês" %>
+      <%= f.date_field :mes, value: @mes.iso8601 %>
+    </div>
+    <div class="campo">
+      <%= f.label :cartao_id, "Cartão" %>
+      <%= f.collection_select :cartao_id, @cartoes, :id, :nome, { include_blank: "Todos", selected: @cartao_id }, {} %>
+    </div>
+    <div class="campo">
+      <%= f.label :categoria_id, "Categoria" %>
+      <%= f.collection_select :categoria_id, @categorias, :id, :nome, { include_blank: "Todas", selected: @categoria_id }, {} %>
+    </div>
+    <%= f.submit "Filtrar" %>
+    <%= link_to "Limpar", root_path, data: { turbo_frame: "painel-conteudo" } %>
+  <% end %>
+</section>
+
+<turbo-frame id="painel-conteudo">
+  <section class="grid-kpis">
+    <div class="kpi-card">
+      <div class="kpi-rotulo">Entradas do mês</div>
+      <div class="kpi">
+        <div class="kpi-valor"><%= moeda(@entradas_do_mes) %></div>
+        <div class="sparkline" data-controller="chart" data-chart-option-value="<%= @sparkline_entradas.to_json %>"></div>
+      </div>
+      <%= render "comparacao", comparacao: @comparacao_entradas, aumento_e_bom: true %>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-rotulo">Saídas do mês</div>
+      <div class="kpi">
+        <div class="kpi-valor"><%= moeda(@saidas_do_mes) %></div>
+        <div class="sparkline" data-controller="chart" data-chart-option-value="<%= @sparkline_saidas.to_json %>"></div>
+      </div>
+      <%= render "comparacao", comparacao: @comparacao_saidas, aumento_e_bom: false %>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-rotulo">Saldo do mês</div>
+      <div class="kpi">
+        <div class="kpi-valor"><%= moeda(@saldo_do_mes) %></div>
+        <div class="sparkline" data-controller="chart" data-chart-option-value="<%= @sparkline_saldo.to_json %>"></div>
+      </div>
+      <%= render "comparacao", comparacao: @comparacao_saldo, aumento_e_bom: true %>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-rotulo">Dívida Total</div>
+      <div class="kpi">
+        <div class="kpi-valor"><%= moeda(@divida_total) %></div>
+        <div class="sparkline" data-controller="chart" data-chart-option-value="<%= @sparkline_divida_total.to_json %>"></div>
+      </div>
+      <p class="kpi-comparacao ajuda">Tendência: valor vencido por mês (sem histórico pra comparar o saldo em aberto)</p>
+    </div>
+  </section>
+
+  <section class="grid-graficos">
+    <div>
+      <h2>Dívida por Cartão</h2>
+      <div class="grafico" data-controller="chart"
+           data-chart-option-value="<%= @grafico_divida_por_cartao.to_json %>"
+           data-chart-frame-value="lancamentos-frame" data-chart-param-value="cartao_id"
+           data-chart-base-url-value="<%= root_path %>" data-chart-mes-value="<%= @mes.iso8601 %>"
+           data-chart-categoria-id-value="<%= @categoria_id %>"></div>
+    </div>
+    <div>
+      <h2>Gasto por Categoria</h2>
+      <div class="grafico" data-controller="chart"
+           data-chart-option-value="<%= @grafico_gasto_por_categoria.to_json %>"
+           data-chart-frame-value="lancamentos-frame" data-chart-param-value="categoria_id"
+           data-chart-base-url-value="<%= root_path %>" data-chart-mes-value="<%= @mes.iso8601 %>"
+           data-chart-cartao-id-value="<%= @cartao_id %>"></div>
+    </div>
+    <div>
+      <h2>Entradas mensais por fonte</h2>
+      <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_entradas_por_fonte.to_json %>"></div>
+    </div>
+    <div>
+      <h2>Entradas vs Saídas</h2>
+      <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_entradas_vs_saidas.to_json %>"></div>
+    </div>
+    <div>
+      <h2>Saldo acumulado</h2>
+      <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_saldo_acumulado.to_json %>"></div>
+    </div>
+    <div>
+      <h2>Fatura por Cartão</h2>
+      <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_fatura_por_cartao.to_json %>"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Central de Obrigações — <%= @mes.strftime("%m/%Y") %></h2>
+    <% if @central_de_obrigacoes.empty? %>
+      <p class="vazio">Nenhuma obrigação neste mês.</p>
+    <% else %>
+      <table class="tabela-pl">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Vencimento</th>
+            <th>Previsto</th>
+            <th>Pago</th>
+            <th>Variação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% ordem_origem = [ ObrigacoesQuery::ORIGEM_SALDO_HERDADO, ObrigacoesQuery::ORIGEM_PARCELA_COMPRA, ObrigacoesQuery::ORIGEM_PARCELA_EMPRESTIMO, ObrigacoesQuery::ORIGEM_DESPESA_FIXA ] %>
+          <% @central_de_obrigacoes.group_by(&:origem).sort_by { |origem, _| ordem_origem.index(origem) }.each do |origem, linhas| %>
+            <tr class="linha-categoria">
+              <td colspan="2"><%= origem %></td>
+              <td class="valor"><%= moeda(linhas.sum(&:previsto)) %></td>
+              <td class="valor"><%= moeda(linhas.filter_map(&:pago).sum) %></td>
+              <td></td>
+            </tr>
+            <% linhas.each do |linha| %>
+              <tr>
+                <td><%= linha.descricao %></td>
+                <td><%= linha.vencimento.strftime("%d/%m/%Y") %></td>
+                <td class="valor"><%= moeda(linha.previsto) %></td>
+                <td class="valor"><%= linha.pago ? moeda(linha.pago) : "—" %></td>
+                <td class="valor <%= linha.variacao.nil? ? "" : (linha.variacao.negative? ? "cor-negativa" : "cor-positiva") %>">
+                  <%= linha.variacao.nil? ? linha.status.to_s.capitalize : moeda(linha.variacao) %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </section>
+
+  <section>
+    <h2>Próximos vencimentos</h2>
+    <% if @proximos_vencimentos.empty? %>
+      <p class="vazio">Nenhum vencimento em aberto.</p>
+    <% else %>
+      <ul class="lista-vencimentos">
+        <% @proximos_vencimentos.each do |obrigacao| %>
+          <li class="<%= "atrasada" if obrigacao.status == :atrasada %>">
+            <span class="vencimento-data"><%= obrigacao.vencimento.strftime("%d/%m") %></span>
+            <span class="vencimento-origem"><%= obrigacao.origem %></span>
+            <span class="vencimento-valor"><%= moeda(obrigacao.valor) %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </section>
+
+  <turbo-frame id="lancamentos-frame">
+    <section>
+      <h2>Lançamentos do período<%= " (filtrado)" if @categoria_id || @cartao_id %></h2>
+      <% if @categoria_id || @cartao_id %>
+        <p class="ajuda"><%= link_to "Limpar filtro de lançamentos", root_path(mes: @mes.iso8601), data: { turbo_frame: "lancamentos-frame" } %></p>
+      <% end %>
+      <% if @lancamentos.empty? %>
+        <p class="vazio">Nenhum lançamento neste período.</p>
+      <% else %>
+        <table class="tabela-densa">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Categoria</th>
+              <th>Forma de pagamento</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @lancamentos.each do |item| %>
+              <tr>
+                <td><%= item.data.strftime("%d/%m/%Y") %></td>
+                <td><%= item.categoria_nome %></td>
+                <td><%= item.forma_pagamento_label %></td>
+                <td class="valor"><%= moeda(item.valor) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </section>
+  </turbo-frame>
+</turbo-frame>

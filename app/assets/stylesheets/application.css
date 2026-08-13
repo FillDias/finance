@@ -396,3 +396,97 @@ section h2 {
   margin-top: 12px;
   color: var(--cor-texto-suave);
 }
+
+.grid-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.kpi-rotulo {
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.kpi-comparacao {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+}
+
+.tabela-pl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabela-pl th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--cabecalho-tabela-fundo);
+  color: var(--cabecalho-tabela-texto);
+}
+
+.tabela-pl th:nth-child(n+3),
+.tabela-pl td.valor {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabela-pl td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.tabela-pl tr.linha-categoria td {
+  font-weight: 700;
+  background: var(--cor-fundo);
+}
+
+.lista-vencimentos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lista-vencimentos li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--cor-borda);
+  font-size: 0.9rem;
+}
+
+.lista-vencimentos li.atrasada .vencimento-data {
+  color: var(--cor-negativo);
+  font-weight: 600;
+}
+
+.vencimento-data {
+  width: 48px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.vencimento-origem {
+  color: var(--cor-texto-suave);
+  flex: 1;
+}
+
+.vencimento-valor {
+  font-variant-numeric: tabular-nums;
+}
