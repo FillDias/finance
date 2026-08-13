@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_12_233450) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_13_104454) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -144,6 +144,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_12_233450) do
     t.datetime "updated_at", null: false
     t.index ["cartao_id", "mes_referencia"], name: "index_saldos_herdados_on_cartao_id_and_mes_referencia", unique: true
     t.index ["cartao_id"], name: "index_saldos_herdados_on_cartao_id"
+  end
+
+  create_table "taxas_cdi", force: :cascade do |t|
+    t.decimal "valor", precision: 6, scale: 3, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tipos_investimento", force: :cascade do |t|

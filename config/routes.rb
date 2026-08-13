@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     end
     resources :aportes, only: [ :create, :edit, :update, :destroy ]
   end
+  resource :taxa_cdi, controller: "taxa_cdi", only: [ :update ]
 
   resources :emprestimos, only: [ :index, :show, :create ]
   resources :parcelas, only: [] do

@@ -3,6 +3,15 @@
   <h1>Investimentos</h1>
 </div>
 
+<section>
+  <h2>Taxa CDI</h2>
+  <%= form_with model: @taxa_cdi, url: taxa_cdi_path, scope: :taxa_cdi, method: :patch, local: true, class: "formulario-inline" do |f| %>
+    <%= f.label :valor, "% ao ano" %>
+    <%= f.number_field :valor, step: "0.001", min: "0", value: @taxa_cdi.valor, required: true %>
+    <%= f.submit "Salvar" %>
+  <% end %>
+</section>
+
 <section class="formulario-secao">
   <h2>Novo investimento</h2>
   <%= render "form", investimento: @investimento, tipos_investimento: @tipos_investimento %>

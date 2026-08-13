@@ -5,6 +5,7 @@ class InvestimentosController < ApplicationController
     @investimento = Investimento.new
     @tipos_investimento = TipoInvestimento.order(:nome)
     @investimentos = Investimento.includes(:tipo_investimento).order(:instituicao)
+    @taxa_cdi = TaxaCdi.atual
   end
 
   def show
@@ -21,6 +22,7 @@ class InvestimentosController < ApplicationController
       @investimento = resultado.valor
       @tipos_investimento = TipoInvestimento.order(:nome)
       @investimentos = Investimento.includes(:tipo_investimento).order(:instituicao)
+      @taxa_cdi = TaxaCdi.atual
       render :index, status: :unprocessable_entity
     end
   end
