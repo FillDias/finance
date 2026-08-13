@@ -7,6 +7,10 @@ class TaxaCdi < ApplicationRecord
 
   def self.atual
     first_or_create!(valor: 0)
+  rescue ActiveRecord::RecordNotUnique
+    # Duas requisições concorrentes tentaram criar a linha ao mesmo tempo;
+    # a que perdeu a corrida do índice único só precisa buscar a que ganhou.
+    first!
   end
 
   private

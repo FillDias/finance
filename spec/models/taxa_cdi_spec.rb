@@ -27,6 +27,14 @@ RSpec.describe TaxaCdi, type: :model do
     expect(segunda.errors[:base]).not_to be_empty
   end
 
+  it "impede uma segunda linha mesmo contornando a validação do model (constraint no banco)" do
+    TaxaCdi.create!(valor: 5)
+
+    expect do
+      ActiveRecord::Base.connection.execute("INSERT INTO taxas_cdi (valor, created_at, updated_at) VALUES (10, NOW(), NOW())")
+    end.to raise_error(ActiveRecord::RecordNotUnique)
+  end
+
   describe ".atual" do
     it "cria o registro único na primeira chamada, com valor zero" do
       expect(TaxaCdi.count).to eq(0)
@@ -45,6 +53,13 @@ RSpec.describe TaxaCdi, type: :model do
       expect(TaxaCdi.atual).to eq(primeira)
       expect(TaxaCdi.atual.valor).to eq(10.75.to_d)
       expect(TaxaCdi.count).to eq(1)
+    end
+
+    it "se recupera quando a criação colide com uma linha criada por outra requisição concorrente" do
+      TaxaCdi.create!(valor: 7)
+      allow(TaxaCdi).to receive(:first_or_create!).and_raise(ActiveRecord::RecordNotUnique)
+
+      expect(TaxaCdi.atual.valor).to eq(7.to_d)
     end
   end
 end
