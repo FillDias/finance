@@ -3,7 +3,7 @@
   <h1><%= @investimento.instituicao %></h1>
   <p class="subtitulo">
     <%= @investimento.tipo_investimento.nome %> ·
-    <%= number_with_precision(@investimento.taxa_rendimento, precision: 3) %><%= @investimento.periodicidade_taxa_label %> ·
+    <%= taxa_rendimento(@investimento) %> ·
     <%= @investimento.status_label %>
     <% if @investimento.data_vencimento %>
       · Vencimento <%= @investimento.data_vencimento.strftime("%d/%m/%Y") %>

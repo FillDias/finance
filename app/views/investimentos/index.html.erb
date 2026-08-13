@@ -30,7 +30,7 @@
           <tr>
             <td><%= link_to investimento.instituicao, investimento_path(investimento) %></td>
             <td><%= investimento.tipo_investimento.nome %></td>
-            <td><%= number_with_precision(investimento.taxa_rendimento, precision: 3) %><%= investimento.periodicidade_taxa_label %></td>
+            <td><%= taxa_rendimento(investimento) %></td>
             <td><%= investimento.data_vencimento&.strftime("%d/%m/%Y") || "—" %></td>
             <% if investimento.resgatado? %>
               <td>Resgatado em <%= investimento.data_resgate.strftime("%d/%m/%Y") %> (<%= moeda(investimento.valor_resgatado) %>)</td>
