@@ -29,4 +29,32 @@ RSpec.describe EvolucaoAportesQuery do
   it "retorna lista vazia quando não há aportes" do
     expect(EvolucaoAportesQuery.call).to eq([])
   end
+
+  describe "somente_ativos" do
+    it "por padrão inclui aportes de investimentos resgatados" do
+      resgatado = Investimento.create!(
+        tipo_investimento: tipo, instituicao: "XP", taxa_rendimento: 1.1, periodicidade_taxa: :mensal,
+        status: :resgatado, valor_resgatado: 900, data_resgate: Date.current
+      )
+      Aporte.create!(investimento: investimento, valor: 500, data: Date.current)
+      Aporte.create!(investimento: resgatado, valor: 300, data: Date.current)
+
+      serie = EvolucaoAportesQuery.call
+
+      expect(serie.last[:acumulado]).to eq(800.to_d)
+    end
+
+    it "quando true, exclui aportes de investimentos resgatados" do
+      resgatado = Investimento.create!(
+        tipo_investimento: tipo, instituicao: "XP", taxa_rendimento: 1.1, periodicidade_taxa: :mensal,
+        status: :resgatado, valor_resgatado: 900, data_resgate: Date.current
+      )
+      Aporte.create!(investimento: investimento, valor: 500, data: Date.current)
+      Aporte.create!(investimento: resgatado, valor: 300, data: Date.current)
+
+      serie = EvolucaoAportesQuery.call(somente_ativos: true)
+
+      expect(serie.last[:acumulado]).to eq(500.to_d)
+    end
+  end
 end

@@ -20,4 +20,19 @@ RSpec.describe GraficoSparklineTotalInvestidoQuery do
 
     expect(opcao[:series].first[:data]).to eq([])
   end
+
+  it "termina no mesmo valor do KPI Total investido, mesmo com aportes de investimentos resgatados" do
+    tipo = TipoInvestimento.create!(nome: "CDB")
+    ativo = Investimento.create!(tipo_investimento: tipo, instituicao: "Nubank", taxa_rendimento: 1.1, periodicidade_taxa: :mensal, status: :ativo)
+    resgatado = Investimento.create!(
+      tipo_investimento: tipo, instituicao: "XP", taxa_rendimento: 1.1, periodicidade_taxa: :mensal,
+      status: :resgatado, valor_resgatado: 900, data_resgate: Date.current
+    )
+    Aporte.create!(investimento: ativo, valor: 500, data: Date.current)
+    Aporte.create!(investimento: resgatado, valor: 300, data: Date.current)
+
+    opcao = GraficoSparklineTotalInvestidoQuery.call
+
+    expect(opcao[:series].first[:data].last).to eq(TotalInvestidoQuery.call)
+  end
 end

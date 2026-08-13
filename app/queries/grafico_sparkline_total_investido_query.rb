@@ -6,7 +6,9 @@ class GraficoSparklineTotalInvestidoQuery < ApplicationQuery
   end
 
   def call
-    valores = EvolucaoAportesQuery.call(meses: @meses).map { |item| item[:acumulado] }
+    # somente_ativos: true — precisa terminar no mesmo número do KPI
+    # "Total investido" ao lado (TotalInvestidoQuery, ativo-only).
+    valores = EvolucaoAportesQuery.call(meses: @meses, somente_ativos: true).map { |item| item[:acumulado] }
 
     {
       xAxis: { type: "category", show: false, data: valores.each_index.to_a },
