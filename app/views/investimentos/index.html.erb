@@ -4,11 +4,46 @@
 </div>
 
 <section>
+  <h2>Total investido</h2>
+  <div class="kpi">
+    <div class="kpi-valor"><%= moeda(@total_investido) %></div>
+    <div class="sparkline" data-controller="chart" data-chart-option-value="<%= @grafico_sparkline_total.to_json %>"></div>
+  </div>
+</section>
+
+<section class="grid-graficos">
+  <div>
+    <h2>Evolução dos aportes</h2>
+    <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_evolucao_aportes.to_json %>"></div>
+  </div>
+  <div>
+    <h2>Distribuição por tipo</h2>
+    <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_distribuicao_por_tipo.to_json %>"></div>
+  </div>
+</section>
+
+<section>
   <h2>Taxa CDI</h2>
   <%= form_with model: @taxa_cdi, url: taxa_cdi_path, scope: :taxa_cdi, method: :patch, local: true, class: "formulario-inline" do |f| %>
     <%= f.label :valor, "% ao ano" %>
     <%= f.number_field :valor, step: "0.001", min: "0", value: @taxa_cdi.valor, required: true %>
     <%= f.submit "Salvar" %>
+  <% end %>
+
+  <% if @comparacoes_cdi.any? %>
+    <ul class="lista-comparacao-cdi">
+      <% @comparacoes_cdi.each do |comparacao| %>
+        <li>
+          <%= comparacao.investimento.instituicao %>:
+          <%= number_with_precision(comparacao.taxa_anualizada, precision: 3) %>% a.a.
+          <span class="<%= comparacao.acima_do_cdi? ? "cor-positiva" : "cor-negativa" %>">
+            (<%= comparacao.acima_do_cdi? ? "acima" : "abaixo" %> do CDI em <%= number_with_precision(comparacao.diferenca.abs, precision: 3) %> p.p.)
+          </span>
+        </li>
+      <% end %>
+    </ul>
+  <% elsif @taxa_cdi.valor.positive? %>
+    <p class="ajuda">Nenhum investimento do tipo "CDI" cadastrado ainda para comparar.</p>
   <% end %>
 </section>
 

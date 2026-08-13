@@ -3,9 +3,7 @@ class InvestimentosController < ApplicationController
 
   def index
     @investimento = Investimento.new
-    @tipos_investimento = TipoInvestimento.order(:nome)
-    @investimentos = Investimento.includes(:tipo_investimento).order(:instituicao)
-    @taxa_cdi = TaxaCdi.atual
+    carregar_dados_index
   end
 
   def show
@@ -20,9 +18,7 @@ class InvestimentosController < ApplicationController
       redirect_to investimentos_path, notice: "Investimento criado."
     else
       @investimento = resultado.valor
-      @tipos_investimento = TipoInvestimento.order(:nome)
-      @investimentos = Investimento.includes(:tipo_investimento).order(:instituicao)
-      @taxa_cdi = TaxaCdi.atual
+      carregar_dados_index
       render :index, status: :unprocessable_entity
     end
   end
@@ -54,6 +50,17 @@ class InvestimentosController < ApplicationController
   end
 
   private
+
+  def carregar_dados_index
+    @tipos_investimento = TipoInvestimento.order(:nome)
+    @investimentos = Investimento.includes(:tipo_investimento).order(:instituicao)
+    @taxa_cdi = TaxaCdi.atual
+    @total_investido = TotalInvestidoQuery.call
+    @grafico_sparkline_total = GraficoSparklineTotalInvestidoQuery.call
+    @grafico_evolucao_aportes = GraficoEvolucaoAportesQuery.call
+    @grafico_distribuicao_por_tipo = GraficoDistribuicaoPorTipoQuery.call
+    @comparacoes_cdi = ComparacaoCdiQuery.call
+  end
 
   def set_investimento
     @investimento = Investimento.find(params[:id])

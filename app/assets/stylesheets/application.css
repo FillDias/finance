@@ -184,6 +184,29 @@ section {
   height: 320px;
 }
 
+.grid-graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.kpi {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.kpi-valor {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.sparkline {
+  width: 140px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
 section h2 {
   margin: 0 0 16px;
   font-size: 1rem;
@@ -218,6 +241,24 @@ section h2 {
 
 .lista-totais strong.cor-negativa {
   color: var(--cor-negativo);
+}
+
+.cor-positiva {
+  color: var(--cor-positivo);
+}
+
+.cor-negativa {
+  color: var(--cor-negativo);
+}
+
+.lista-comparacao-cdi {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
 }
 
 .barra-limite {
