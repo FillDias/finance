@@ -1,4 +1,9 @@
-Obrigacao = Struct.new(:valor, :vencimento, :status, :origem, :registro, keyword_init: true) do
+class Obrigacao < Struct.new(:valor, :vencimento, :status, :origem, :registro, keyword_init: true)
+  ORIGEM_SALDO_HERDADO = "Saldo Herdado"
+  ORIGEM_PARCELA_COMPRA = "Parcela de Compra"
+  ORIGEM_PARCELA_EMPRESTIMO = "Parcela de Empréstimo"
+  ORIGEM_DESPESA_FIXA = "Despesa Fixa"
+
   def pendente?
     status == :pendente
   end

@@ -20,27 +20,36 @@ class PainelController < ApplicationController
 
   def carregar_kpis
     @entradas_do_mes = EntradasDoMesQuery.call(mes: @mes)
-    @saidas_do_mes = SaidasDoMesQuery.call(mes: @mes)
+    @saidas_do_mes = SaidasDoMesQuery.call(mes: @mes, categoria_id: @categoria_id, cartao_id: @cartao_id)
+    # Saldo = Entradas - Saídas (ver CONTEXT.md) é um número com significado
+    # próprio; aplicar o filtro de Categoria/Cartão só no lado das Saídas
+    # produziria um "saldo" que não bate com nenhum saldo de verdade, então
+    # esse KPI (e sua sparkline) ficam de fora do filtro — não é "aplicável".
     @saldo_do_mes = SaldoDoMesQuery.call(mes: @mes)
-    @divida_total = DividaTotalQuery.call
+    @obrigacoes_em_aberto = ObrigacoesEmAbertoQuery.call
 
     @sparkline_entradas = GraficoSparklineEntradasQuery.call
-    @sparkline_saidas = GraficoSparklineSaidasQuery.call
+    @sparkline_saidas = GraficoSparklineSaidasQuery.call(categoria_id: @categoria_id, cartao_id: @cartao_id)
     @sparkline_saldo = GraficoSparklineSaldoQuery.call
-    @sparkline_divida_total = GraficoSparklineDividaTotalQuery.call
+    @sparkline_obrigacoes_em_aberto = GraficoSparklineObrigacoesEmAbertoQuery.call
 
     @comparacao_entradas = ComparacaoPeriodoQuery.call(mes: @mes) { |mes| EntradasDoMesQuery.call(mes: mes) }
-    @comparacao_saidas = ComparacaoPeriodoQuery.call(mes: @mes) { |mes| SaidasDoMesQuery.call(mes: mes) }
+    @comparacao_saidas = ComparacaoPeriodoQuery.call(mes: @mes) { |mes| SaidasDoMesQuery.call(mes: mes, categoria_id: @categoria_id, cartao_id: @cartao_id) }
     @comparacao_saldo = ComparacaoPeriodoQuery.call(mes: @mes) { |mes| SaldoDoMesQuery.call(mes: mes) }
   end
 
+  # Entradas por Fonte, Entradas vs Saídas e Saldo Acumulado são gráficos de
+  # tendência multi-mês (o "período anterior" já aparece como uma barra/
+  # ponto adjacente no próprio gráfico) e nenhum tem uma noção de Categoria
+  # ou Cartão (Renda não pertence a nenhum dos dois) — por isso ficam fora
+  # do filtro de Categoria/Cartão, "quando aplicável" (ver AC do ticket #12).
   def carregar_graficos
-    @grafico_divida_por_cartao = GraficoDividaPorCartaoQuery.call
-    @grafico_gasto_por_categoria = GraficoGastoPorCategoriaQuery.call(mes: @mes)
+    @grafico_saldo_restante_por_cartao = GraficoSaldoRestantePorCartaoQuery.call(cartao_id: @cartao_id)
+    @grafico_gasto_por_categoria = GraficoGastoPorCategoriaQuery.call(mes: @mes, categoria_id: @categoria_id, cartao_id: @cartao_id)
     @grafico_entradas_por_fonte = GraficoEntradasPorFonteQuery.call
     @grafico_entradas_vs_saidas = GraficoEntradasVsSaidasQuery.call
     @grafico_saldo_acumulado = GraficoSaldoAcumuladoQuery.call
-    @grafico_fatura_por_cartao = GraficoFaturaPorCartaoQuery.call(mes: @mes)
+    @grafico_fatura_por_cartao = GraficoFaturaPorCartaoQuery.call(mes: @mes, cartao_id: @cartao_id)
   end
 
   def carregar_tabelas

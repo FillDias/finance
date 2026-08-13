@@ -1,9 +1,13 @@
 # Rosca com uma fatia por Cartão, sombreada dentro do gradiente de azul do
-# guia de design (mais escuro = mais dívida). Tooltip por fatia mostra a
-# composição (Saldo Herdado + parcelas), não só o total.
-class GraficoDividaPorCartaoQuery < ApplicationQuery
+# guia de design (mais escuro = mais saldo restante). Tooltip por fatia
+# mostra a composição (Saldo Herdado + parcelas), não só o total.
+class GraficoSaldoRestantePorCartaoQuery < ApplicationQuery
+  def initialize(cartao_id: nil)
+    @cartao_id = cartao_id
+  end
+
   def call
-    itens = DividaPorCartaoQuery.call
+    itens = SaldoRestantePorCartaoQuery.call(cartao_id: @cartao_id)
 
     {
       tooltip: { trigger: "item" },

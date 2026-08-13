@@ -6,7 +6,6 @@ module PaletaGrafico
   GRADIENTE_CLARO = "#a9c4e8"
   GRADIENTE_ESCURO = "#0b2e5c"
   CABECALHO_FUNDO = "#101b2d"
-  TEXTO_SECUNDARIO = "#6b7280"
 
   # Gradiente linear pronto pro itemStyle.color de uma série de barras do
   # ECharts (JSON puro, não uma função — ver chart_controller.js).

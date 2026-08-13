@@ -30,4 +30,22 @@ RSpec.describe GastoPorCategoriaQuery do
 
     expect(GastoPorCategoriaQuery.call(mes: Date.current)).to be_empty
   end
+
+  it "filtra por categoria" do
+    Despesa.create!(valor: 200, data: Date.current, categoria: mercado, tipo: :variavel, forma_pagamento: :dinheiro)
+    Despesa.create!(valor: 100, data: Date.current, categoria: lazer, tipo: :variavel, forma_pagamento: :pix)
+
+    itens = GastoPorCategoriaQuery.call(mes: Date.current, categoria_id: mercado.id)
+
+    expect(itens.map { |item| item[:categoria] }).to eq([ "Mercado" ])
+  end
+
+  it "filtra por cartão, restringindo a Compra e excluindo Despesa" do
+    Despesa.create!(valor: 200, data: Date.current, categoria: mercado, tipo: :variavel, forma_pagamento: :dinheiro)
+    CriarCompraNoCartao.call(cartao_id: cartao.id, data_compra: Date.current, valor_total: 400, parcelado: false, categoria_id: mercado.id)
+
+    itens = GastoPorCategoriaQuery.call(mes: Date.current, cartao_id: cartao.id)
+
+    expect(itens).to eq([ { categoria_id: mercado.id, categoria: "Mercado", valor: 400.to_d, despesas: 0, compras: 400.to_d, compras_qtd: 1 } ])
+  end
 end

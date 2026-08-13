@@ -10,19 +10,20 @@
 // clicar no item atualiza o `src` de um turbo-frame com esse filtro — sem
 // esses values, o listener de clique nem é registrado, então gráficos sem
 // drill-down (ex.: Investimentos) continuam funcionando do mesmo jeito.
+// `extra-params` carrega o resto do estado de filtro da tela (ex.: mês,
+// categoria/cartão já selecionados) como um objeto JSON genérico — este
+// controller não conhece os nomes dos filtros de nenhuma tela específica.
 //
 //   <div data-controller="chart" data-chart-option-value="..."
 //        data-chart-frame-value="lancamentos-frame" data-chart-param-value="categoria_id"
-//        data-chart-base-url-value="<%= root_path %>" data-chart-mes-value="<%= @mes.iso8601 %>"></div>
+//        data-chart-base-url-value="<%= root_path %>"
+//        data-chart-extra-params-value="<%= { mes: @mes.iso8601, cartao_id: @cartao_id }.compact.to_json %>"></div>
 //
 import { Controller } from "@hotwired/stimulus"
 import * as echarts from "echarts"
 
 export default class extends Controller {
-  static values = {
-    option: Object, frame: String, param: String, baseUrl: String,
-    mes: String, categoriaId: String, cartaoId: String
-  }
+  static values = { option: Object, frame: String, param: String, baseUrl: String, extraParams: Object }
 
   connect() {
     this.chart = echarts.init(this.element)
@@ -48,9 +49,7 @@ export default class extends Controller {
     if (!frame) return
 
     const url = new URL(this.baseUrlValue, window.location.origin)
-    if (this.hasMesValue) url.searchParams.set("mes", this.mesValue)
-    if (this.hasCategoriaIdValue && this.categoriaIdValue) url.searchParams.set("categoria_id", this.categoriaIdValue)
-    if (this.hasCartaoIdValue && this.cartaoIdValue) url.searchParams.set("cartao_id", this.cartaoIdValue)
+    Object.entries(this.extraParamsValue || {}).forEach(([key, value]) => url.searchParams.set(key, value))
     url.searchParams.set(this.paramValue, chave)
 
     frame.src = url.toString()

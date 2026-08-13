@@ -30,4 +30,19 @@ RSpec.describe SaidasDoMesQuery do
   it "retorna zero quando não há despesas no mês" do
     expect(SaidasDoMesQuery.call(mes: Date.new(2026, 3, 1))).to eq(0)
   end
+
+  it "filtra por categoria" do
+    outra_categoria = Categoria.create!(nome: "Lazer")
+    Despesa.create!(valor: 200, data: Date.new(2026, 3, 5), categoria: categoria, tipo: :variavel, forma_pagamento: :dinheiro)
+    Despesa.create!(valor: 90, data: Date.new(2026, 3, 6), categoria: outra_categoria, tipo: :variavel, forma_pagamento: :pix)
+
+    expect(SaidasDoMesQuery.call(mes: Date.new(2026, 3, 1), categoria_id: categoria.id)).to eq(200.to_d)
+  end
+
+  it "filtra por cartão, restringindo a Compra e excluindo Despesa" do
+    Despesa.create!(valor: 200, data: Date.new(2026, 3, 5), categoria: categoria, tipo: :variavel, forma_pagamento: :dinheiro)
+    CriarCompraNoCartao.call(cartao_id: cartao.id, data_compra: Date.new(2026, 3, 5), valor_total: 300, parcelado: false, categoria_id: categoria.id)
+
+    expect(SaidasDoMesQuery.call(mes: Date.new(2026, 3, 1), cartao_id: cartao.id)).to eq(300.to_d)
+  end
 end

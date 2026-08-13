@@ -53,10 +53,10 @@
     </div>
 
     <div class="kpi-card">
-      <div class="kpi-rotulo">Dívida Total</div>
+      <div class="kpi-rotulo">Obrigações em aberto</div>
       <div class="kpi">
-        <div class="kpi-valor"><%= moeda(@divida_total) %></div>
-        <div class="sparkline" data-controller="chart" data-chart-option-value="<%= @sparkline_divida_total.to_json %>"></div>
+        <div class="kpi-valor"><%= moeda(@obrigacoes_em_aberto) %></div>
+        <div class="sparkline" data-controller="chart" data-chart-option-value="<%= @sparkline_obrigacoes_em_aberto.to_json %>"></div>
       </div>
       <p class="kpi-comparacao ajuda">Tendência: valor vencido por mês (sem histórico pra comparar o saldo em aberto)</p>
     </div>
@@ -64,20 +64,20 @@
 
   <section class="grid-graficos">
     <div>
-      <h2>Dívida por Cartão</h2>
+      <h2>Saldo restante por Cartão</h2>
       <div class="grafico" data-controller="chart"
-           data-chart-option-value="<%= @grafico_divida_por_cartao.to_json %>"
+           data-chart-option-value="<%= @grafico_saldo_restante_por_cartao.to_json %>"
            data-chart-frame-value="lancamentos-frame" data-chart-param-value="cartao_id"
-           data-chart-base-url-value="<%= root_path %>" data-chart-mes-value="<%= @mes.iso8601 %>"
-           data-chart-categoria-id-value="<%= @categoria_id %>"></div>
+           data-chart-base-url-value="<%= root_path %>"
+           data-chart-extra-params-value="<%= { mes: @mes.iso8601, categoria_id: @categoria_id }.compact.to_json %>"></div>
     </div>
     <div>
       <h2>Gasto por Categoria</h2>
       <div class="grafico" data-controller="chart"
            data-chart-option-value="<%= @grafico_gasto_por_categoria.to_json %>"
            data-chart-frame-value="lancamentos-frame" data-chart-param-value="categoria_id"
-           data-chart-base-url-value="<%= root_path %>" data-chart-mes-value="<%= @mes.iso8601 %>"
-           data-chart-cartao-id-value="<%= @cartao_id %>"></div>
+           data-chart-base-url-value="<%= root_path %>"
+           data-chart-extra-params-value="<%= { mes: @mes.iso8601, cartao_id: @cartao_id }.compact.to_json %>"></div>
     </div>
     <div>
       <h2>Entradas mensais por fonte</h2>
@@ -113,7 +113,7 @@
           </tr>
         </thead>
         <tbody>
-          <% ordem_origem = [ ObrigacoesQuery::ORIGEM_SALDO_HERDADO, ObrigacoesQuery::ORIGEM_PARCELA_COMPRA, ObrigacoesQuery::ORIGEM_PARCELA_EMPRESTIMO, ObrigacoesQuery::ORIGEM_DESPESA_FIXA ] %>
+          <% ordem_origem = [ Obrigacao::ORIGEM_SALDO_HERDADO, Obrigacao::ORIGEM_PARCELA_COMPRA, Obrigacao::ORIGEM_PARCELA_EMPRESTIMO, Obrigacao::ORIGEM_DESPESA_FIXA ] %>
           <% @central_de_obrigacoes.group_by(&:origem).sort_by { |origem, _| ordem_origem.index(origem) }.each do |origem, linhas| %>
             <tr class="linha-categoria">
               <td colspan="2"><%= origem %></td>
