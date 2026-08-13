@@ -19,13 +19,13 @@ class GraficoSparklineTotalInvestidoQuery < ApplicationQuery
           type: "line",
           data: valores,
           symbol: "none",
-          lineStyle: { width: 2, color: "#2d5fae" },
+          lineStyle: { width: 2, color: PaletaGrafico::CABECALHO_FUNDO },
           markPoint: {
             symbolSize: 6,
             label: { show: false },
             data: [
-              { type: "max", itemStyle: { color: "#1a7f4b" } },
-              { type: "min", itemStyle: { color: "#c0392b" } }
+              { type: "max", itemStyle: { color: PaletaGrafico::POSITIVO } },
+              { type: "min", itemStyle: { color: PaletaGrafico::NEGATIVO } }
             ]
           }
         }

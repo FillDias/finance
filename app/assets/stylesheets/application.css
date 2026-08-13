@@ -14,20 +14,26 @@
  *= require_self
  */
 
+/* Paleta definida em docs/design-visual.md — vale pro app inteiro, não só
+   pro Painel, já que a sidebar é compartilhada por todas as telas. */
 :root {
-  --cor-positivo: #1a7f4b;
+  --cor-positivo: #1e8e3e;
   --cor-negativo: #c0392b;
   --cor-neutra: #2d5fae;
-  --cor-fundo: #f5f6f8;
+  --cor-fundo: #f4f6f9;
   --cor-superficie: #ffffff;
   --cor-texto: #1f2430;
   --cor-texto-suave: #6b7280;
   --cor-borda: #e2e5ea;
   --sidebar-largura: 220px;
-  --sidebar-fundo: #1a2233;
-  --sidebar-texto: #c7cede;
-  --sidebar-ativo-fundo: #2d5fae;
+  --sidebar-fundo: #101b2d;
+  --sidebar-texto: #e4e8f0;
+  --sidebar-ativo-fundo: #1c2a42;
   --sidebar-ativo-texto: #ffffff;
+  --gradiente-claro: #a9c4e8;
+  --gradiente-escuro: #0b2e5c;
+  --cabecalho-tabela-fundo: #101b2d;
+  --cabecalho-tabela-texto: #ffffff;
 }
 
 * {
