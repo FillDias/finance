@@ -86,4 +86,17 @@ RSpec.describe DespesasFiltradas do
       expect(DespesasFiltradas.call.size).to eq(4)
     end
   end
+
+  describe "filtro por cartão (drill-down do Painel)" do
+    it "restringe a listagem só às compras com categoria daquele cartão, excluindo Despesa" do
+      outro_cartao = Cartao.create!(nome: "Gold", credor: credor, limite_total: 3000, dia_fechamento: 5, dia_vencimento: 12, data_corte: Date.new(2026, 1, 1))
+      CriarCompraNoCartao.call(cartao_id: cartao.id, data_compra: Date.new(2026, 4, 5), valor_total: 200, parcelado: false, categoria_id: transporte.id)
+      CriarCompraNoCartao.call(cartao_id: outro_cartao.id, data_compra: Date.new(2026, 4, 6), valor_total: 90, parcelado: false, categoria_id: transporte.id)
+
+      resultado = DespesasFiltradas.call(cartao_id: cartao.id)
+
+      expect(resultado.size).to eq(1)
+      expect(resultado.first.valor).to eq(200.to_d)
+    end
+  end
 end

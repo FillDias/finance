@@ -1,12 +1,16 @@
 class DespesasFiltradas < ApplicationQuery
-  def initialize(categoria_id: nil, data_inicio: nil, data_fim: nil)
+  def initialize(categoria_id: nil, cartao_id: nil, data_inicio: nil, data_fim: nil)
     @categoria_id = categoria_id
+    @cartao_id = cartao_id
     @data_inicio = data_inicio
     @data_fim = data_fim
   end
 
   def call
-    (despesas_listadas + compras_listadas).sort_by(&:data).reverse
+    # Filtro por Cartão só faz sentido pra Compra (Despesa não pertence a
+    # nenhum Cartão) — com o filtro ativo, a lista vira só as compras dele.
+    itens = @cartao_id.present? ? compras_listadas : despesas_listadas + compras_listadas
+    itens.sort_by(&:data).reverse
   end
 
   private
@@ -30,6 +34,7 @@ class DespesasFiltradas < ApplicationQuery
   def compras_listadas
     relacao = Compra.includes(:categoria, :cartao).where.not(categoria_id: nil)
     relacao = relacao.where(categoria_id: @categoria_id) if @categoria_id.present?
+    relacao = relacao.where(cartao_id: @cartao_id) if @cartao_id.present?
     relacao = relacao.where(data_compra: periodo) if periodo
 
     relacao.map do |compra|
