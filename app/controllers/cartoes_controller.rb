@@ -46,6 +46,11 @@ class CartoesController < ApplicationController
     end
   end
 
+  def exportar
+    resultado = ExportarRelatorioXlsx.call(abas: [ :cartoes ])
+    enviar_xlsx(resultado.valor, "cartoes")
+  end
+
   private
 
   def set_cartao

@@ -43,6 +43,11 @@ class DespesasController < ApplicationController
     redirect_to despesas_path, notice: "Despesa removida."
   end
 
+  def exportar
+    resultado = ExportarRelatorioXlsx.call(abas: [ :despesas ])
+    enviar_xlsx(resultado.valor, "despesas")
+  end
+
   private
 
   def set_despesa

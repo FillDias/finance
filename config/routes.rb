@@ -10,11 +10,17 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   root "painel#index"
+  get "exportar", to: "painel#exportar", as: :exportar_painel
 
-  resources :rendas, path: "receitas", only: [ :index, :create, :edit, :update, :destroy ]
-  resources :despesas, only: [ :index, :create, :edit, :update, :destroy ]
+  resources :rendas, path: "receitas", only: [ :index, :create, :edit, :update, :destroy ] do
+    collection { get :exportar }
+  end
+  resources :despesas, only: [ :index, :create, :edit, :update, :destroy ] do
+    collection { get :exportar }
+  end
   resources :categorias, only: [ :index, :create, :edit, :update, :destroy ]
   resources :cartoes, only: [ :index, :show, :create, :edit, :update ] do
+    collection { get :exportar }
     resources :compras, only: [ :create ]
     post "faturas/pagar", to: "faturas#pagar", as: :pagar_fatura
   end
@@ -37,7 +43,9 @@ Rails.application.routes.draw do
   end
   resource :taxa_cdi, controller: "taxa_cdi", only: [ :update ]
 
-  resources :emprestimos, only: [ :index, :show, :create ]
+  resources :emprestimos, only: [ :index, :show, :create ] do
+    collection { get :exportar }
+  end
   resources :parcelas, only: [] do
     member do
       patch :pagar

@@ -111,6 +111,13 @@ body {
   color: var(--cor-texto-suave);
 }
 
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .page-header h1 {
   margin: 0 0 4px;
 }
@@ -118,6 +125,22 @@ body {
 .page-header .subtitulo {
   margin: 0 0 24px;
   color: var(--cor-texto-suave);
+}
+
+.botao-secundario {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 4px;
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.botao-secundario:hover {
+  background: var(--cor-fundo);
 }
 
 .formulario-filtro {

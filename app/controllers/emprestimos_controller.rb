@@ -25,6 +25,11 @@ class EmprestimosController < ApplicationController
     end
   end
 
+  def exportar
+    resultado = ExportarRelatorioXlsx.call(abas: [ :emprestimos ])
+    enviar_xlsx(resultado.valor, "emprestimos")
+  end
+
   private
 
   def set_emprestimo

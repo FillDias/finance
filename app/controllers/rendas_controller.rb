@@ -37,6 +37,11 @@ class RendasController < ApplicationController
     redirect_to rendas_path, notice: "Renda removida."
   end
 
+  def exportar
+    resultado = ExportarRelatorioXlsx.call(abas: [ :receitas ])
+    enviar_xlsx(resultado.valor, "receitas")
+  end
+
   private
 
   def set_renda

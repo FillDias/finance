@@ -37,6 +37,9 @@ gem "csv"
 # Groups records by month/period for the Painel and Investimentos charts (ADR 0005)
 gem "groupdate"
 
+# Gera os arquivos XLSX de exportação (ticket #13)
+gem "caxlsx"
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 

@@ -10,6 +10,11 @@ class PainelController < ApplicationController
     carregar_opcoes_de_filtro
   end
 
+  def exportar
+    resultado = ExportarRelatorioXlsx.call
+    enviar_xlsx(resultado.valor, "relatorio-financeiro")
+  end
+
   private
 
   def mes_filtrado
