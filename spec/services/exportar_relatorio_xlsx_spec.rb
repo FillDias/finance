@@ -62,8 +62,8 @@ RSpec.describe ExportarRelatorioXlsx do
     end
   end
 
-  describe "aba Resumo de Dívidas" do
-    it "lista Credor, Saldo Restante e Categoria (Cartão ou Empréstimo)" do
+  describe "aba Resumo de Obrigações" do
+    it "lista Credor, Saldo Restante e Tipo (Cartão ou Empréstimo)" do
       credor_cartao = Credor.create!(nome: "Nubank")
       cartao = Cartao.create!(nome: "Ultravioleta", credor: credor_cartao, limite_total: 5000, dia_fechamento: 5, dia_vencimento: 12, data_corte: Date.new(2026, 1, 1))
       SaldoHerdado.create!(cartao: cartao, mes_referencia: Date.new(2026, 3, 1), valor_total: 800)
@@ -71,9 +71,9 @@ RSpec.describe ExportarRelatorioXlsx do
       credor_emprestimo = Credor.create!(nome: "Itaú")
       CriarEmprestimo.call(nome: "Financiamento", credor_id: credor_emprestimo.id, valor_total: 1000, cronograma_texto: "2026-08-15,1000.00")
 
-      linhas = linhas_da_aba(ExportarRelatorioXlsx.call(abas: [ :resumo_dividas ]).valor, "Resumo de Dívidas")
+      linhas = linhas_da_aba(ExportarRelatorioXlsx.call(abas: [ :resumo_obrigacoes ]).valor, "Resumo de Obrigações")
 
-      expect(linhas.first).to eq([ "Credor", "Saldo Restante", "Categoria" ])
+      expect(linhas.first).to eq([ "Credor", "Saldo Restante", "Tipo" ])
       expect(linhas).to include([ "Nubank", 800.0, "Cartão" ])
       expect(linhas).to include([ "Itaú", 1000.0, "Empréstimo" ])
     end
@@ -84,7 +84,7 @@ RSpec.describe ExportarRelatorioXlsx do
       package = ExportarRelatorioXlsx.call.valor
 
       nomes = package.workbook.worksheets.map(&:name)
-      expect(nomes).to contain_exactly("Receitas", "Despesas", "Cartões", "Empréstimos", "Resumo de Dívidas")
+      expect(nomes).to contain_exactly("Receitas", "Despesas", "Cartões", "Empréstimos", "Resumo de Obrigações")
     end
   end
 end

@@ -9,7 +9,7 @@ class ExportarRelatorioXlsx < ApplicationService
     despesas: AbaDespesasXlsx,
     cartoes: AbaCartoesXlsx,
     emprestimos: AbaEmprestimosXlsx,
-    resumo_dividas: AbaResumoDividasXlsx
+    resumo_obrigacoes: AbaResumoObrigacoesXlsx
   }.freeze
 
   def initialize(abas: ABAS.keys)
@@ -18,7 +18,7 @@ class ExportarRelatorioXlsx < ApplicationService
 
   def call
     package = Axlsx::Package.new
-    @abas.each { |aba| ABAS.fetch(aba).adicionar(package) }
+    @abas.each { |aba| ABAS.fetch(aba).call(package: package) }
 
     Resultado.sucesso(valor: package)
   end
