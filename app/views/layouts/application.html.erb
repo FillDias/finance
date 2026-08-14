@@ -20,6 +20,9 @@
   <body>
     <%= render "layouts/sidebar" %>
     <main class="main-content">
+      <% flash.each do |tipo, mensagem| %>
+        <div class="flash flash-<%= tipo %>"><%= mensagem %></div>
+      <% end %>
       <%= yield %>
     </main>
   </body>

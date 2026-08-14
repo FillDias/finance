@@ -370,6 +370,25 @@ section h2 {
   padding-left: 18px;
 }
 
+.flash {
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.flash-notice {
+  background: #eafaf1;
+  border: 1px solid var(--cor-positivo);
+  color: var(--cor-positivo);
+}
+
+.flash-alert {
+  background: #fdecea;
+  border: 1px solid var(--cor-negativo);
+  color: var(--cor-negativo);
+}
+
 .tabela-densa {
   width: 100%;
   border-collapse: collapse;
