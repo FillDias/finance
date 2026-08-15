@@ -186,6 +186,7 @@
           <%= compra.data_compra.strftime("%d/%m/%Y") %> ·
           <%= moeda(compra.valor_total) %> ·
           <%= compra.parcelado? ? "#{compra.numero_parcelas}x" : "à vista" %>
+          <%= button_to "Excluir", cartao_compra_path(@cartao, compra), method: :delete, data: { turbo_confirm: "Remover esta compra e todas as parcelas dela?" }, class: "link-excluir" %>
         </p>
         <table class="tabela-densa">
           <thead>

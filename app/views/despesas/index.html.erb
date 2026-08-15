@@ -64,6 +64,7 @@
                 <%= button_to "Excluir", parcelamento_path(item.registro), method: :delete, data: { turbo_confirm: "Remover este parcelamento?" }, class: "link-excluir" %>
               <% else %>
                 <%= link_to "Ver no cartão", cartao_path(item.registro.cartao) %>
+                <%= button_to "Excluir", cartao_compra_path(item.registro.cartao, item.registro), method: :delete, data: { turbo_confirm: "Remover esta compra e todas as parcelas dela?" }, class: "link-excluir" %>
               <% end %>
             </td>
           </tr>

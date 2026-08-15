@@ -9,6 +9,12 @@ class ComprasController < ApplicationController
     end
   end
 
+  def destroy
+    compra = Compra.find(params[:id])
+    ExcluirCompra.call(compra: compra)
+    redirect_back fallback_location: cartao_path(params[:cartao_id]), notice: "Compra removida."
+  end
+
   private
 
   def compra_params

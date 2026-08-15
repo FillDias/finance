@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   resources :categorias, only: [ :index, :create, :edit, :update, :destroy ]
   resources :cartoes, only: [ :index, :show, :create, :edit, :update ] do
     collection { get :exportar }
-    resources :compras, only: [ :create ]
+    resources :compras, only: [ :create, :destroy ]
     post "faturas/pagar", to: "faturas#pagar", as: :pagar_fatura
   end
   resources :credores, only: [ :index, :show, :create, :edit, :update ]
