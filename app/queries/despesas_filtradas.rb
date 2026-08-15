@@ -7,10 +7,10 @@ class DespesasFiltradas < ApplicationQuery
   end
 
   def call
-    # Filtro por Cartão só faz sentido pra Compra (Despesa e Parcelamento não
-    # pertencem a nenhum Cartão) — com o filtro ativo, a lista vira só as
-    # compras dele.
-    itens = @cartao_id.present? ? compras_listadas : despesas_listadas + compras_listadas + parcelamentos_listados
+    # Filtro por Cartão só faz sentido pra Compra (Despesa, Parcelamento e
+    # Emprestimo não pertencem a nenhum Cartão) — com o filtro ativo, a
+    # lista vira só as compras dele.
+    itens = @cartao_id.present? ? compras_listadas : despesas_listadas + compras_listadas + parcelamentos_listados + emprestimos_listados
     itens.sort_by(&:data).reverse
   end
 
@@ -57,6 +57,29 @@ class DespesasFiltradas < ApplicationQuery
         forma_pagamento_label: parcelamento.forma_pagamento_label, valor: parcelamento.valor_total, registro: parcelamento
       )
     end
+  end
+
+  # Diferente de compras_listadas/parcelamentos_listados (uma linha por
+  # registro, na sua própria data), Emprestimo lista uma linha por Parcela —
+  # não tem um único "data" de lançamento (o cronograma inteiro é cadastrado
+  # de uma vez, ver CriarEmprestimo), então cada parcela aparece no mês do
+  # seu próprio vencimento, igual ao que já conta pra Saídas do mês.
+  def emprestimos_listados
+    relacao = Emprestimo.includes(:categoria, :parcelas)
+    relacao = relacao.where(categoria_id: @categoria_id) if @categoria_id.present?
+
+    relacao.flat_map do |emprestimo|
+      parcelas = emprestimo.parcelas
+      parcelas = parcelas.select { |parcela| periodo.cover?(parcela.data_vencimento) } if periodo
+      parcelas.map { |parcela| linha_emprestimo(emprestimo, parcela) }
+    end
+  end
+
+  def linha_emprestimo(emprestimo, parcela)
+    DespesaListada.new(
+      data: parcela.data_vencimento, categoria_nome: emprestimo.categoria.nome, tipo_label: "Fixa",
+      forma_pagamento_label: "Empréstimo #{emprestimo.nome}", valor: parcela.valor, registro: emprestimo
+    )
   end
 
   def periodo

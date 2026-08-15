@@ -64,7 +64,7 @@
   </section>
 
   <section class="grid-graficos">
-    <div>
+    <div class="grafico-card">
       <h2>Saldo restante por Cartão</h2>
       <div class="grafico" data-controller="chart"
            data-chart-option-value="<%= @grafico_saldo_restante_por_cartao.to_json %>"
@@ -72,7 +72,7 @@
            data-chart-base-url-value="<%= root_path %>"
            data-chart-extra-params-value="<%= { mes: @mes.iso8601, categoria_id: @categoria_id }.compact.to_json %>"></div>
     </div>
-    <div>
+    <div class="grafico-card">
       <h2>Gasto por Categoria</h2>
       <div class="grafico" data-controller="chart"
            data-chart-option-value="<%= @grafico_gasto_por_categoria.to_json %>"
@@ -80,19 +80,19 @@
            data-chart-base-url-value="<%= root_path %>"
            data-chart-extra-params-value="<%= { mes: @mes.iso8601, cartao_id: @cartao_id }.compact.to_json %>"></div>
     </div>
-    <div>
+    <div class="grafico-card">
       <h2>Entradas mensais por fonte</h2>
       <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_entradas_por_fonte.to_json %>"></div>
     </div>
-    <div>
+    <div class="grafico-card">
       <h2>Entradas vs Saídas</h2>
       <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_entradas_vs_saidas.to_json %>"></div>
     </div>
-    <div>
+    <div class="grafico-card">
       <h2>Saldo acumulado</h2>
       <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_saldo_acumulado.to_json %>"></div>
     </div>
-    <div>
+    <div class="grafico-card">
       <h2>Fatura por Cartão</h2>
       <div class="grafico" data-controller="chart" data-chart-option-value="<%= @grafico_fatura_por_cartao.to_json %>"></div>
     </div>

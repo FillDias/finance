@@ -116,6 +116,35 @@ RSpec.describe DespesasFiltradas do
     end
   end
 
+  describe "Emprestimo" do
+    it "lista uma linha por Parcela (não por Emprestimo), no mês do vencimento" do
+      CriarEmprestimo.call(
+        nome: "Financiamento do carro", credor_id: credor.id, categoria_id: transporte.id, valor_total: 600,
+        cronograma_texto: "2026-04-15,300.00\n2026-05-15,300.00"
+      )
+
+      itens_abril = DespesasFiltradas.call(data_inicio: Date.new(2026, 4, 1), data_fim: Date.new(2026, 4, 30))
+      item = itens_abril.find { |i| i.categoria_nome == "Transporte" }
+
+      expect(item).not_to be_nil
+      expect(item).to be_emprestimo
+      expect(item.valor).to eq(300.to_d)
+      expect(item.tipo_label).to eq("Fixa")
+      expect(item.forma_pagamento_label).to eq("Empréstimo Financiamento do carro")
+    end
+
+    it "não aparece quando o filtro é por cartão, igual à Despesa e ao Parcelamento" do
+      CriarEmprestimo.call(
+        nome: "Financiamento do carro", credor_id: credor.id, categoria_id: transporte.id, valor_total: 300,
+        cronograma_texto: "2026-04-15,300.00"
+      )
+
+      resultado = DespesasFiltradas.call(cartao_id: cartao.id)
+
+      expect(resultado).to be_empty
+    end
+  end
+
   describe "filtro por cartão (drill-down do Painel)" do
     it "restringe a listagem só às compras com categoria daquele cartão, excluindo Despesa" do
       outro_cartao = Cartao.create!(nome: "Gold", credor: credor, limite_total: 3000, dia_fechamento: 5, dia_vencimento: 12, data_corte: Date.new(2026, 1, 1))

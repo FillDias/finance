@@ -51,7 +51,8 @@ RSpec.describe ExportarRelatorioXlsx do
   describe "aba Empréstimos" do
     it "lista o cronograma completo de parcelas, incluindo as já pagas" do
       credor = Credor.create!(nome: "Nubank")
-      resultado = CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, valor_total: 2000, cronograma_texto: "2026-08-15,1000.00\n2026-09-15,1000.00")
+      categoria = Categoria.create!(nome: "Financiamento")
+      resultado = CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 2000, cronograma_texto: "2026-08-15,1000.00\n2026-09-15,1000.00")
       MarcarParcelaComoPaga.call(parcela: resultado.valor.parcelas.first)
 
       linhas = linhas_da_aba(ExportarRelatorioXlsx.call(abas: [ :emprestimos ]).valor, "Empréstimos")
@@ -69,7 +70,8 @@ RSpec.describe ExportarRelatorioXlsx do
       SaldoHerdado.create!(cartao: cartao, mes_referencia: Date.new(2026, 3, 1), valor_total: 800)
 
       credor_emprestimo = Credor.create!(nome: "Itaú")
-      CriarEmprestimo.call(nome: "Financiamento", credor_id: credor_emprestimo.id, valor_total: 1000, cronograma_texto: "2026-08-15,1000.00")
+      categoria_emprestimo = Categoria.create!(nome: "Financiamento")
+      CriarEmprestimo.call(nome: "Financiamento", credor_id: credor_emprestimo.id, categoria_id: categoria_emprestimo.id, valor_total: 1000, cronograma_texto: "2026-08-15,1000.00")
 
       linhas = linhas_da_aba(ExportarRelatorioXlsx.call(abas: [ :resumo_obrigacoes ]).valor, "Resumo de Obrigações")
 

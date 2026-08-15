@@ -9,4 +9,8 @@ DespesaListada = Struct.new(
   def parcelamento?
     registro.is_a?(Parcelamento)
   end
+
+  def emprestimo?
+    registro.is_a?(Emprestimo)
+  end
 end

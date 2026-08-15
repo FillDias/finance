@@ -1,15 +1,19 @@
 class CriarEmprestimo < ApplicationService
   include ParseiaValorEData
 
-  def initialize(nome:, credor_id:, valor_total:, cronograma_texto:)
+  def initialize(nome:, credor_id:, categoria_id:, valor_total:, cronograma_texto:)
     @nome = nome
     @credor_id = credor_id
+    @categoria_id = categoria_id
     @valor_total = valor_total
     @cronograma_texto = cronograma_texto.to_s
   end
 
   def call
-    emprestimo = Emprestimo.new(nome: @nome, credor_id: @credor_id, valor_total: @valor_total, cronograma_texto: @cronograma_texto)
+    emprestimo = Emprestimo.new(
+      nome: @nome, credor_id: @credor_id, categoria_id: @categoria_id,
+      valor_total: @valor_total, cronograma_texto: @cronograma_texto
+    )
     return Resultado.erro(*emprestimo.errors.full_messages, valor: emprestimo) unless emprestimo.valid?
 
     linhas = @cronograma_texto.split("\n").map(&:strip).reject(&:empty?)

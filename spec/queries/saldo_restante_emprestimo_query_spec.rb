@@ -3,8 +3,9 @@ require "rails_helper"
 RSpec.describe SaldoRestanteEmprestimoQuery do
   it "soma as parcelas pendentes e atrasadas, ignorando as pagas" do
     credor = Credor.create!(nome: "Nubank")
+    categoria = Categoria.create!(nome: "Financiamento")
     resultado = CriarEmprestimo.call(
-      nome: "Financiamento", credor_id: credor.id, valor_total: 3000,
+      nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 3000,
       cronograma_texto: "2026-08-15,1000.00\n2026-09-15,1000.00\n2026-10-15,1000.00"
     )
     emprestimo = resultado.valor
@@ -15,7 +16,8 @@ RSpec.describe SaldoRestanteEmprestimoQuery do
 
   it "zero quando todas as parcelas estão pagas" do
     credor = Credor.create!(nome: "Nubank")
-    resultado = CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, valor_total: 1000, cronograma_texto: "2026-08-15,1000.00")
+    categoria = Categoria.create!(nome: "Financiamento")
+    resultado = CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 1000, cronograma_texto: "2026-08-15,1000.00")
     emprestimo = resultado.valor
     MarcarParcelaComoPaga.call(parcela: emprestimo.parcelas.first)
 

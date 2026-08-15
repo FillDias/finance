@@ -17,7 +17,7 @@ class GraficoGastoPorCategoriaQuery < ApplicationQuery
 
     {
       tooltip: { trigger: "item" },
-      grid: { left: 140, right: 80 },
+      grid: { left: 16, right: 80, containLabel: true },
       xAxis: { type: "value" },
       yAxis: { type: "category", data: itens.map { |item| item[:categoria] } },
       series: [
@@ -41,6 +41,8 @@ class GraficoGastoPorCategoriaQuery < ApplicationQuery
     texto = "#{item[:categoria]}: #{FormatadorMoeda.para(item[:valor])}<br/>" \
       "Despesas: #{FormatadorMoeda.para(item[:despesas])}"
     texto += "<br/>Compras no cartão: #{FormatadorMoeda.para(item[:compras])} (#{item[:compras_qtd]})" if item[:compras].positive?
+    texto += "<br/>Parcelamentos: #{FormatadorMoeda.para(item[:parcelamentos])}" if item[:parcelamentos].positive?
+    texto += "<br/>Empréstimos: #{FormatadorMoeda.para(item[:emprestimos])}" if item[:emprestimos].positive?
     texto + comparacoes(item)
   end
 

@@ -143,6 +143,13 @@ body {
   display: flex;
 }
 
+/* Aplicada via JS quando o dropdown alinhado à esquerda (padrão)
+   ultrapassaria a borda direita da janela — ver dropdown_controller.js. */
+.topnav-dropdown.alinhar-direita {
+  left: auto;
+  right: 0;
+}
+
 .topnav-dropdown-item {
   display: flex;
   align-items: center;
@@ -276,12 +283,31 @@ section {
 .grafico {
   width: 100%;
   height: 320px;
+  flex-shrink: 0;
 }
 
+/* .grid-graficos é um <section>, mas não deve levar o card único da regra
+   `section` acima — cada gráfico ganha seu próprio card (.grafico-card),
+   senão os 6 gráficos ficam soltos dentro de uma superfície compartilhada,
+   sem contorno próprio (era por isso que a rosca parecia maior que os
+   gráficos de barra vizinhos: nada delimitava o tamanho de cada um). */
 .grid-graficos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 24px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.grafico-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(16, 27, 45, 0.06);
 }
 
 .kpi {

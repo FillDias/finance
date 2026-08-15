@@ -6,7 +6,7 @@
 
 <section class="formulario-secao">
   <h2>Novo empréstimo</h2>
-  <%= render "form", emprestimo: @emprestimo, credores: @credores, erros: @erros %>
+  <%= render "form", emprestimo: @emprestimo, credores: @credores, categorias: @categorias, erros: @erros %>
 </section>
 
 <section>
@@ -19,6 +19,7 @@
         <tr>
           <th>Nome</th>
           <th>Credor</th>
+          <th>Categoria</th>
           <th>Valor total</th>
           <th>Parcelas</th>
           <th></th>
@@ -29,6 +30,7 @@
           <tr>
             <td><%= link_to emprestimo.nome, emprestimo_path(emprestimo) %></td>
             <td><%= link_to emprestimo.credor.nome, credor_path(emprestimo.credor) %></td>
+            <td><%= emprestimo.categoria.nome %></td>
             <td class="valor"><%= moeda(emprestimo.valor_total) %></td>
             <td><%= emprestimo.parcelas.count %></td>
             <td class="acoes"><%= link_to "Ver parcelas", emprestimo_path(emprestimo) %></td>

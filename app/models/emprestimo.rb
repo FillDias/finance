@@ -4,6 +4,7 @@ class Emprestimo < ApplicationRecord
   attr_accessor :cronograma_texto
 
   belongs_to :credor
+  belongs_to :categoria
   has_many :parcelas, as: :origem, dependent: :destroy
 
   validates :nome, presence: true

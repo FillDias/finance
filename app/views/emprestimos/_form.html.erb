@@ -20,6 +20,11 @@
   </div>
 
   <div class="campo">
+    <%= f.label :categoria_id, "Categoria" %>
+    <%= f.collection_select :categoria_id, categorias, :id, :nome, prompt: "Selecione" %>
+  </div>
+
+  <div class="campo">
     <%= f.label :valor_total, "Valor total" %>
     <%= f.number_field :valor_total, step: "0.01", min: "0.01", required: true %>
   </div>

@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe MarcarParcelaComoPaga do
   let(:credor) { Credor.create!(nome: "Caixa") }
-  let(:emprestimo) { Emprestimo.create!(nome: "Financiamento do carro", credor: credor, valor_total: 30000) }
+  let(:categoria) { Categoria.create!(nome: "Financiamento") }
+  let(:emprestimo) { Emprestimo.create!(nome: "Financiamento do carro", credor: credor, categoria: categoria, valor_total: 30000) }
   let(:parcela) { emprestimo.parcelas.create!(valor: 450, data_vencimento: Date.new(2026, 8, 15), status: :pendente) }
 
   it "marca a parcela como paga com a data informada" do

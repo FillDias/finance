@@ -55,7 +55,13 @@ class GraficoEntradasVsSaidasQuery < ApplicationQuery
     [
       {
         name: nome, type: "line", data: reais + preenchimento_futuro, color: cor, areaStyle: { opacity: 0.1 },
-        markPoint: { data: [ { type: "max", name: "Máximo" }, { type: "min", name: "Mínimo" } ] },
+        # position/distance evitam que o rótulo do marcador de máximo/mínimo
+        # sobreponha a própria linha ou o marcador da outra série.
+        markPoint: {
+          symbolSize: 46,
+          label: { position: "top", distance: 10 },
+          data: [ { type: "max", name: "Máximo" }, { type: "min", name: "Mínimo" } ]
+        },
         **marklines_comparacao_anual(nome, valor_ano_anterior)
       },
       {

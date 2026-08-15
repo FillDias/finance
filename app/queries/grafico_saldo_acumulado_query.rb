@@ -11,6 +11,10 @@ class GraficoSaldoAcumuladoQuery < ApplicationQuery
 
     {
       tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+      # top reserva espaço pro rótulo do markPoint do maior saldo, que senão
+      # fica cortado na borda superior do gráfico quando o saldo mais alto
+      # está perto do topo do eixo.
+      grid: { top: 56, containLabel: true },
       xAxis: { type: "category", data: linhas.map { |linha| linha[:mes].strftime("%m/%Y") } },
       yAxis: { type: "value" },
       series: [

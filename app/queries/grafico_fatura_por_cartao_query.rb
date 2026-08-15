@@ -12,7 +12,7 @@ class GraficoFaturaPorCartaoQuery < ApplicationQuery
 
     {
       tooltip: { trigger: "item" },
-      grid: { left: 120, right: 80 },
+      grid: { left: 16, right: 80, containLabel: true },
       xAxis: { type: "value" },
       yAxis: { type: "category", data: itens.map { |item| item[:cartao] } },
       series: [

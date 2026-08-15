@@ -4,7 +4,8 @@ class EmprestimosController < ApplicationController
   def index
     @emprestimo = Emprestimo.new
     @credores = Credor.order(:nome)
-    @emprestimos = Emprestimo.includes(:credor).order(:nome)
+    @categorias = Categoria.order(:nome)
+    @emprestimos = Emprestimo.includes(:credor, :categoria).order(:nome)
   end
 
   def show
@@ -20,7 +21,8 @@ class EmprestimosController < ApplicationController
       @emprestimo = resultado.valor
       @erros = resultado.erros
       @credores = Credor.order(:nome)
-      @emprestimos = Emprestimo.includes(:credor).order(:nome)
+      @categorias = Categoria.order(:nome)
+      @emprestimos = Emprestimo.includes(:credor, :categoria).order(:nome)
       render :index, status: :unprocessable_entity
     end
   end
@@ -37,6 +39,6 @@ class EmprestimosController < ApplicationController
   end
 
   def emprestimo_params
-    params.require(:emprestimo).permit(:nome, :credor_id, :valor_total, :cronograma_texto).to_h.symbolize_keys
+    params.require(:emprestimo).permit(:nome, :credor_id, :categoria_id, :valor_total, :cronograma_texto).to_h.symbolize_keys
   end
 end

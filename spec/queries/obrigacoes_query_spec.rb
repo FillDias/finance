@@ -56,7 +56,7 @@ RSpec.describe ObrigacoesQuery do
 
   describe "Parcela de Empréstimo" do
     it "inclui parcelas pendentes de empréstimo" do
-      CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, valor_total: 30000, cronograma_texto: "2026-08-15,450.00")
+      CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000, cronograma_texto: "2026-08-15,450.00")
 
       item = ObrigacoesQuery.call.find { |i| i.origem == "Parcela de Empréstimo" }
 
@@ -66,7 +66,7 @@ RSpec.describe ObrigacoesQuery do
     end
 
     it "não inclui parcelas de empréstimo já pagas" do
-      resultado = CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, valor_total: 30000, cronograma_texto: "2026-08-15,450.00")
+      resultado = CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000, cronograma_texto: "2026-08-15,450.00")
       MarcarParcelaComoPaga.call(parcela: resultado.valor.parcelas.first)
 
       expect(ObrigacoesQuery.call.map(&:origem)).not_to include("Parcela de Empréstimo")

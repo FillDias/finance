@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe CriarEmprestimo do
   let(:credor) { Credor.create!(nome: "Caixa") }
+  let(:categoria) { Categoria.create!(nome: "Financiamento") }
 
   def cronograma(linhas)
     linhas.join("\n")
@@ -9,7 +10,7 @@ RSpec.describe CriarEmprestimo do
 
   it "cria o empréstimo e o cronograma completo de parcelas" do
     resultado = CriarEmprestimo.call(
-      nome: "Financiamento do carro", credor_id: credor.id, valor_total: 30000,
+      nome: "Financiamento do carro", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000,
       cronograma_texto: cronograma([ "2026-08-15,450.00", "2026-09-15,450.00", "2026-10-15,450.00" ])
     )
 
@@ -23,7 +24,7 @@ RSpec.describe CriarEmprestimo do
 
   it "aceita parcelas de valores diferentes (cronograma real, não gerado automaticamente)" do
     resultado = CriarEmprestimo.call(
-      nome: "Consignado", credor_id: credor.id, valor_total: 5000,
+      nome: "Consignado", credor_id: credor.id, categoria_id: categoria.id, valor_total: 5000,
       cronograma_texto: cronograma([ "2026-08-15,1000.00", "2026-09-15,1500.00", "2026-10-15,2500.00" ])
     )
 
@@ -31,9 +32,19 @@ RSpec.describe CriarEmprestimo do
     expect(resultado.valor.parcelas.order(:data_vencimento).pluck(:valor)).to eq([ 1000.0.to_d, 1500.0.to_d, 2500.0.to_d ])
   end
 
+  it "não cria nada sem categoria" do
+    resultado = CriarEmprestimo.call(
+      nome: "Financiamento do carro", credor_id: credor.id, categoria_id: nil, valor_total: 30000,
+      cronograma_texto: cronograma([ "2026-08-15,450.00" ])
+    )
+
+    expect(resultado).to be_erro
+    expect(Emprestimo.count).to eq(0)
+  end
+
   it "não cria nada quando os dados do empréstimo são inválidos" do
     resultado = CriarEmprestimo.call(
-      nome: "", credor_id: credor.id, valor_total: 30000, cronograma_texto: cronograma([ "2026-08-15,450.00" ])
+      nome: "", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000, cronograma_texto: cronograma([ "2026-08-15,450.00" ])
     )
 
     expect(resultado).to be_erro
@@ -41,7 +52,7 @@ RSpec.describe CriarEmprestimo do
   end
 
   it "não cria nada quando o cronograma está vazio" do
-    resultado = CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, valor_total: 30000, cronograma_texto: "")
+    resultado = CriarEmprestimo.call(nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000, cronograma_texto: "")
 
     expect(resultado).to be_erro
     expect(Emprestimo.count).to eq(0)
@@ -49,7 +60,7 @@ RSpec.describe CriarEmprestimo do
 
   it "rejeita o cronograma inteiro (tudo-ou-nada) quando uma linha tem data inválida" do
     resultado = CriarEmprestimo.call(
-      nome: "Financiamento", credor_id: credor.id, valor_total: 30000,
+      nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000,
       cronograma_texto: cronograma([ "2026-08-15,450.00", "data-invalida,450.00" ])
     )
 
@@ -61,7 +72,7 @@ RSpec.describe CriarEmprestimo do
 
   it "rejeita o cronograma inteiro quando uma linha tem valor inválido" do
     resultado = CriarEmprestimo.call(
-      nome: "Financiamento", credor_id: credor.id, valor_total: 30000,
+      nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000,
       cronograma_texto: cronograma([ "2026-08-15,não-é-um-valor" ])
     )
 
@@ -71,7 +82,7 @@ RSpec.describe CriarEmprestimo do
 
   it "rejeita o cronograma inteiro quando uma linha tem formato errado" do
     resultado = CriarEmprestimo.call(
-      nome: "Financiamento", credor_id: credor.id, valor_total: 30000,
+      nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000,
       cronograma_texto: cronograma([ "2026-08-15,450.00,extra" ])
     )
 
@@ -81,7 +92,7 @@ RSpec.describe CriarEmprestimo do
 
   it "ignora linhas em branco no cronograma" do
     resultado = CriarEmprestimo.call(
-      nome: "Financiamento", credor_id: credor.id, valor_total: 30000,
+      nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000,
       cronograma_texto: "2026-08-15,450.00\n\n2026-09-15,450.00\n"
     )
 
@@ -91,7 +102,7 @@ RSpec.describe CriarEmprestimo do
 
   it "rejeita graciosamente (sem levantar exceção) uma linha com valor zero ou negativo" do
     resultado = CriarEmprestimo.call(
-      nome: "Financiamento", credor_id: credor.id, valor_total: 30000,
+      nome: "Financiamento", credor_id: credor.id, categoria_id: categoria.id, valor_total: 30000,
       cronograma_texto: cronograma([ "2026-08-15,450.00", "2026-09-15,-50.00" ])
     )
 
