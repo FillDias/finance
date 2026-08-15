@@ -33,7 +33,10 @@ class ObrigacoesQuery < ApplicationQuery
   end
 
   def origem_da_parcela(parcela)
-    parcela.origem_emprestimo? ? Obrigacao::ORIGEM_PARCELA_EMPRESTIMO : Obrigacao::ORIGEM_PARCELA_COMPRA
+    return Obrigacao::ORIGEM_PARCELA_EMPRESTIMO if parcela.origem_emprestimo?
+    return Obrigacao::ORIGEM_PARCELAMENTO if parcela.origem_parcelamento?
+
+    Obrigacao::ORIGEM_PARCELA_COMPRA
   end
 
   # Despesa não tem estado de pagamento (é lançada como um fato já

@@ -34,11 +34,17 @@ class CentralDeObrigacoesQuery < ApplicationQuery
   end
 
   def origem_da_parcela(parcela)
-    parcela.origem_emprestimo? ? Obrigacao::ORIGEM_PARCELA_EMPRESTIMO : Obrigacao::ORIGEM_PARCELA_COMPRA
+    return Obrigacao::ORIGEM_PARCELA_EMPRESTIMO if parcela.origem_emprestimo?
+    return Obrigacao::ORIGEM_PARCELAMENTO if parcela.origem_parcelamento?
+
+    Obrigacao::ORIGEM_PARCELA_COMPRA
   end
 
   def descricao_da_parcela(parcela)
-    parcela.origem_emprestimo? ? parcela.origem.nome : "Cartão #{parcela.origem.cartao.nome}"
+    return parcela.origem.nome if parcela.origem_emprestimo?
+    return parcela.origem.categoria.nome if parcela.origem_parcelamento?
+
+    "Cartão #{parcela.origem.cartao.nome}"
   end
 
   # Despesa é lançada como um fato já resolvido (ver ObrigacoesQuery) — não

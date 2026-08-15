@@ -40,7 +40,7 @@ class DespesasController < ApplicationController
 
   def destroy
     ExcluirDespesa.call(despesa: @despesa)
-    redirect_to despesas_path, notice: "Despesa removida."
+    redirect_back fallback_location: despesas_path, notice: "Despesa removida."
   end
 
   def exportar

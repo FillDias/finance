@@ -7,12 +7,13 @@ class CriarDespesa < ApplicationService
     @forma_pagamento = forma_pagamento
     @dia_vencimento = dia_vencimento
     @cartao_id = cartao_id
-    @parcelado = parcelado
+    @parcelado = ActiveModel::Type::Boolean.new.cast(parcelado)
     @numero_parcelas = numero_parcelas
   end
 
   def call
     return criar_como_compra if forma_pagamento_cartao?
+    return criar_como_parcelamento if @parcelado
 
     despesa = Despesa.new(
       valor: @valor,
@@ -48,6 +49,20 @@ class CriarDespesa < ApplicationService
       numero_parcelas: @numero_parcelas,
       categoria_id: @categoria_id,
       tipo: @tipo
+    )
+  end
+
+  # Uma Despesa parcelada fora do Cartão também não gera um registro Despesa
+  # — vira um Parcelamento (ver CONTEXT.md), mesma ideia de "nunca duas
+  # linhas" que a Despesa paga no cartão já usa pra virar Compra.
+  def criar_como_parcelamento
+    CriarParcelamento.call(
+      valor_total: @valor,
+      numero_parcelas: @numero_parcelas,
+      data: @data,
+      categoria_id: @categoria_id,
+      tipo: @tipo,
+      forma_pagamento: @forma_pagamento
     )
   end
 end

@@ -1,0 +1,64 @@
+<nav class="topnav" aria-label="Navegação principal">
+  <div class="topnav-marca">Finance</div>
+
+  <div class="topnav-links">
+    <%= link_to root_path, class: "topnav-link #{"active" if params[:controller] == "painel"}" do %>
+      <svg class="topnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      <span>Painel</span>
+    <% end %>
+
+    <div class="topnav-grupo" data-controller="dropdown">
+      <button type="button" class="topnav-grupo-botao <%= "active" if %w[rendas despesas].include?(params[:controller]) %>"
+              data-action="click->dropdown#toggle" aria-haspopup="true" aria-expanded="false">
+        <span>Lançamentos</span>
+        <svg class="topnav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="topnav-dropdown" data-dropdown-target="menu">
+        <%= link_to rendas_path, class: "topnav-dropdown-item" do %>
+          <svg class="topnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+          <span>Receitas</span>
+        <% end %>
+        <%= link_to despesas_path, class: "topnav-dropdown-item" do %>
+          <svg class="topnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 7 9 13 13 9 21 17"/><polyline points="21 10 21 17 14 17"/></svg>
+          <span>Despesas</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="topnav-grupo" data-controller="dropdown">
+      <button type="button" class="topnav-grupo-botao <%= "active" if %w[cartoes emprestimos].include?(params[:controller]) %>"
+              data-action="click->dropdown#toggle" aria-haspopup="true" aria-expanded="false">
+        <span>Dívidas</span>
+        <svg class="topnav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="topnav-dropdown" data-dropdown-target="menu">
+        <%= link_to cartoes_path, class: "topnav-dropdown-item" do %>
+          <svg class="topnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          <span>Cartões</span>
+        <% end %>
+        <%= link_to emprestimos_path, class: "topnav-dropdown-item" do %>
+          <svg class="topnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><line x1="5" y1="21" x2="5" y2="10"/><line x1="19" y1="21" x2="19" y2="10"/><polygon points="12 3 21 9 3 9"/></svg>
+          <span>Empréstimos</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="topnav-grupo" data-controller="dropdown">
+      <button type="button" class="topnav-grupo-botao <%= "active" if %w[investimentos tipos_investimento exportacoes].include?(params[:controller]) %>"
+              data-action="click->dropdown#toggle" aria-haspopup="true" aria-expanded="false">
+        <span>Mais</span>
+        <svg class="topnav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="topnav-dropdown" data-dropdown-target="menu">
+        <%= link_to investimentos_path, class: "topnav-dropdown-item" do %>
+          <svg class="topnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+          <span>Investimentos</span>
+        <% end %>
+        <%= link_to exportacoes_path, class: "topnav-dropdown-item" do %>
+          <svg class="topnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Exportar</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</nav>

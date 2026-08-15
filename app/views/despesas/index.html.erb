@@ -60,6 +60,8 @@
               <% if item.despesa? %>
                 <%= link_to "Editar", edit_despesa_path(item.registro) %>
                 <%= button_to "Excluir", despesa_path(item.registro), method: :delete, data: { turbo_confirm: "Remover este lançamento?" }, class: "link-excluir" %>
+              <% elsif item.parcelamento? %>
+                <%= button_to "Excluir", parcelamento_path(item.registro), method: :delete, data: { turbo_confirm: "Remover este parcelamento?" }, class: "link-excluir" %>
               <% else %>
                 <%= link_to "Ver no cartão", cartao_path(item.registro.cartao) %>
               <% end %>

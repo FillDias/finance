@@ -47,6 +47,18 @@ RSpec.describe CentralDeObrigacoesQuery do
     end
   end
 
+  describe "Parcela de Parcelamento" do
+    it "descreve pela categoria, igual a Despesa Fixa" do
+      CriarParcelamento.call(valor_total: 300, numero_parcelas: 3, data: Date.current.beginning_of_month, categoria_id: categoria.id, tipo: "variavel", forma_pagamento: "boleto")
+
+      linha = CentralDeObrigacoesQuery.call.find { |l| l.origem == "Parcela de Parcelamento" }
+
+      expect(linha).not_to be_nil
+      expect(linha.descricao).to eq(categoria.nome)
+      expect(linha.previsto).to eq(100.to_d)
+    end
+  end
+
   describe "Despesa Fixa" do
     it "previsto e pago são o mesmo valor, sem variação" do
       Despesa.create!(valor: 120, data: Date.current, categoria: categoria, tipo: :fixa, forma_pagamento: :boleto, dia_vencimento: 10)

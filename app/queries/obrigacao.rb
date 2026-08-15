@@ -2,6 +2,7 @@ class Obrigacao < Struct.new(:valor, :vencimento, :status, :origem, :registro, k
   ORIGEM_SALDO_HERDADO = "Saldo Herdado"
   ORIGEM_PARCELA_COMPRA = "Parcela de Compra"
   ORIGEM_PARCELA_EMPRESTIMO = "Parcela de Empréstimo"
+  ORIGEM_PARCELAMENTO = "Parcela de Parcelamento"
   ORIGEM_DESPESA_FIXA = "Despesa Fixa"
 
   def pendente?

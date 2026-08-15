@@ -16,6 +16,10 @@ class Parcela < ApplicationRecord
     origem.is_a?(Emprestimo)
   end
 
+  def origem_parcelamento?
+    origem.is_a?(Parcelamento)
+  end
+
   def status_label
     return "Atrasada" if atrasada?
 

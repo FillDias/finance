@@ -73,6 +73,24 @@ RSpec.describe ObrigacoesQuery do
     end
   end
 
+  describe "Parcela de Parcelamento" do
+    it "inclui parcelas pendentes de parcelamento" do
+      CriarParcelamento.call(valor_total: 300, numero_parcelas: 3, data: Date.new(2026, 7, 3), categoria_id: categoria.id, tipo: "variavel", forma_pagamento: "boleto")
+
+      item = ObrigacoesQuery.call.find { |i| i.origem == "Parcela de Parcelamento" }
+
+      expect(item).not_to be_nil
+      expect(item.valor).to eq(100.to_d)
+    end
+
+    it "não inclui parcelas de parcelamento já pagas" do
+      resultado = CriarParcelamento.call(valor_total: 300, numero_parcelas: 3, data: Date.new(2026, 7, 3), categoria_id: categoria.id, tipo: "variavel", forma_pagamento: "boleto")
+      resultado.valor.parcelas.first.update!(status: :paga)
+
+      expect(ObrigacoesQuery.call.count { |i| i.origem == "Parcela de Parcelamento" }).to eq(2)
+    end
+  end
+
   describe "Despesa Fixa" do
     it "inclui despesa fixa, usando a data como vencimento" do
       Despesa.create!(valor: 120, data: Date.current + 5, categoria: categoria, tipo: :fixa, forma_pagamento: :boleto, dia_vencimento: 10)

@@ -15,7 +15,10 @@
  */
 
 /* Paleta definida em docs/design-visual.md — vale pro app inteiro, não só
-   pro Painel, já que a sidebar é compartilhada por todas as telas. */
+   pro Painel, já que o menu do topo é compartilhado por todas as telas.
+   Os tokens --sidebar-* vêm do menu lateral original (ver ADR 0006) e
+   continuam com esse nome — só o layout que os usa mudou, de lateral pra
+   barra horizontal. */
 :root {
   --cor-positivo: #1e8e3e;
   --cor-negativo: #c0392b;
@@ -25,7 +28,7 @@
   --cor-texto: #1f2430;
   --cor-texto-suave: #6b7280;
   --cor-borda: #e2e5ea;
-  --sidebar-largura: 220px;
+  --topnav-altura: 64px;
   --sidebar-fundo: #101b2d;
   --sidebar-texto: #e4e8f0;
   --sidebar-ativo-fundo: #1c2a42;
@@ -47,60 +50,122 @@ body {
   color: var(--cor-texto);
 }
 
-.sidebar {
+.topnav {
   position: fixed;
   top: 0;
   left: 0;
-  width: var(--sidebar-largura);
-  height: 100vh;
+  right: 0;
+  height: var(--topnav-altura);
   background: var(--sidebar-fundo);
   color: var(--sidebar-texto);
-  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 10;
 }
 
-.sidebar-brand {
-  padding: 20px 24px;
+.topnav-marca {
   font-weight: 700;
   font-size: 1.1rem;
   color: #ffffff;
   letter-spacing: 0.02em;
 }
 
-.sidebar-nav {
-  list-style: none;
-  margin: 0;
-  padding: 8px 0;
-}
-
-.sidebar-nav li a {
+.topnav-links {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 24px;
+  gap: 4px;
+}
+
+.topnav-link,
+.topnav-grupo-botao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 6px;
   color: var(--sidebar-texto);
   text-decoration: none;
   font-size: 0.95rem;
 }
 
-.sidebar-nav li a:hover {
+.topnav-grupo-botao {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.topnav-link:hover,
+.topnav-grupo-botao:hover {
   background: rgba(255, 255, 255, 0.06);
 }
 
-.sidebar-nav li.active a {
+.topnav-link.active,
+.topnav-grupo-botao.active {
   background: var(--sidebar-ativo-fundo);
   color: var(--sidebar-ativo-texto);
 }
 
-.sidebar-icon {
+.topnav-icon {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
 }
 
+.topnav-chevron {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.topnav-grupo {
+  position: relative;
+}
+
+.topnav-dropdown {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 220px;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(16, 27, 45, 0.16);
+  padding: 8px;
+}
+
+.topnav-dropdown.aberto {
+  display: flex;
+}
+
+.topnav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: var(--cor-texto);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.topnav-dropdown-item:hover {
+  background: var(--cor-fundo);
+}
+
+.topnav-dropdown-item .topnav-icon {
+  color: var(--cor-texto-suave);
+}
+
 .main-content {
-  margin-left: var(--sidebar-largura);
+  margin-top: var(--topnav-altura);
   padding: 32px 40px;
-  min-height: 100vh;
+  min-height: calc(100vh - var(--topnav-altura));
 }
 
 .page-placeholder h1 {

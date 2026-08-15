@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :despesas, only: [ :index, :create, :edit, :update, :destroy ] do
     collection { get :exportar }
   end
+  resources :parcelamentos, only: [ :destroy ]
   resources :categorias, only: [ :index, :create, :edit, :update, :destroy ]
   resources :cartoes, only: [ :index, :show, :create, :edit, :update ] do
     collection { get :exportar }

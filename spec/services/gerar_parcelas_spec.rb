@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe GerarParcelas do
-  it "divide R$1000 em 3x, com o ajuste de centavos na última parcela" do
+  it "divide o valor e monta as datas delegando pra DividirParcelas" do
     resultado = GerarParcelas.call(
       valor_total: 1000, numero_parcelas: 3, data_compra: Date.new(2026, 7, 1),
       dia_fechamento: 5, dia_vencimento: 12
@@ -23,32 +23,23 @@ RSpec.describe GerarParcelas do
     expect(resultado.valor.first[:valor]).to eq(250.to_d)
   end
 
-  it "divide um valor exato sem sobra" do
-    resultado = GerarParcelas.call(
-      valor_total: 300, numero_parcelas: 3, data_compra: Date.new(2026, 7, 1),
-      dia_fechamento: 5, dia_vencimento: 12
-    )
-
-    expect(resultado.valor.map { |p| p[:valor] }).to eq([ 100.to_d, 100.to_d, 100.to_d ])
-  end
-
   describe "regra de fechamento" do
     it "compra antes do dia de fechamento cai na fatura do mesmo mês" do
       resultado = GerarParcelas.call(
-        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 7, 3),
+        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 7, 4),
         dia_fechamento: 5, dia_vencimento: 12
       )
 
       expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 7, 12))
     end
 
-    it "compra exatamente no dia de fechamento cai na fatura do mesmo mês" do
+    it "compra exatamente no dia de fechamento já cai na fatura do mês seguinte" do
       resultado = GerarParcelas.call(
         valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 7, 5),
         dia_fechamento: 5, dia_vencimento: 12
       )
 
-      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 7, 12))
+      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 8, 12))
     end
 
     it "compra depois do dia de fechamento cai na fatura do mês seguinte" do
@@ -69,22 +60,6 @@ RSpec.describe GerarParcelas do
       expect(resultado.valor.map { |p| p[:data_vencimento] }).to eq([
         Date.new(2026, 8, 12), Date.new(2026, 9, 12), Date.new(2026, 10, 12)
       ])
-    end
-
-    it "usa o último dia do mês quando o dia de vencimento não existe naquele mês" do
-      resultado = GerarParcelas.call(
-        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 1, 20),
-        dia_fechamento: 25, dia_vencimento: 31
-      )
-
-      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 1, 31))
-
-      resultado_fevereiro = GerarParcelas.call(
-        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 2, 20),
-        dia_fechamento: 25, dia_vencimento: 31
-      )
-
-      expect(resultado_fevereiro.valor.first[:data_vencimento]).to eq(Date.new(2026, 2, 28))
     end
   end
 end

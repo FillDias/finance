@@ -42,14 +42,18 @@
   </div>
 
   <% if permitir_cartao %>
-    <%# Despesa não tem cartao_id/parcelado/numero_parcelas como atributos —
-        são repassados soltos pro CriarDespesa delegar pro CriarCompraNoCartao
-        (ver ticket #9), por isso usamos tags livres em vez de f.collection_select/f.check_box. %>
+    <%# Despesa não tem cartao_id como atributo — é repassado solto pro
+        CriarDespesa delegar pro CriarCompraNoCartao (ver ticket #9), por
+        isso usamos select_tag em vez de f.collection_select. %>
     <div class="campo">
       <label for="despesa_cartao_id">Cartão (apenas se a forma de pagamento for Cartão)</label>
       <%= select_tag "despesa[cartao_id]", options_from_collection_for_select(cartoes, :id, :nome), include_blank: true, id: "despesa_cartao_id" %>
     </div>
 
+    <%# "Parcelada" vale pra qualquer forma de pagamento, não só Cartão —
+        com Cartão vira Compra parcelada; sem Cartão vira Parcelamento (ver
+        CriarDespesa). Despesa também não tem parcelado/numero_parcelas como
+        atributos, mesmo motivo do cartao_id acima. %>
     <div class="campo campo-checkbox">
       <%= hidden_field_tag "despesa[parcelado]", "0", id: nil %>
       <%= check_box_tag "despesa[parcelado]", "1", false, id: "despesa_parcelado" %>

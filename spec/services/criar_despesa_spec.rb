@@ -66,4 +66,29 @@ RSpec.describe CriarDespesa do
       expect(Compra.count).to eq(0)
     end
   end
+
+  describe "quando é parcelada sem ser no cartão" do
+    it "cria um Parcelamento em vez de uma Despesa" do
+      resultado = CriarDespesa.call(
+        valor: 300, data: Date.new(2026, 7, 3), categoria_id: categoria.id, tipo: "variavel",
+        forma_pagamento: "boleto", parcelado: true, numero_parcelas: 3
+      )
+
+      expect(resultado).to be_sucesso
+      expect(resultado.valor).to be_a(Parcelamento)
+      expect(Despesa.count).to eq(0)
+      expect(resultado.valor.parcelas.count).to eq(3)
+    end
+
+    it "continua criando uma Despesa comum quando não é parcelada" do
+      resultado = CriarDespesa.call(
+        valor: 80, data: Date.current, categoria_id: categoria.id, tipo: "variavel",
+        forma_pagamento: "dinheiro", parcelado: false
+      )
+
+      expect(resultado).to be_sucesso
+      expect(resultado.valor).to be_a(Despesa)
+      expect(Parcelamento.count).to eq(0)
+    end
+  end
 end

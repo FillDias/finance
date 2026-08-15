@@ -7,9 +7,10 @@ class DespesasFiltradas < ApplicationQuery
   end
 
   def call
-    # Filtro por Cartão só faz sentido pra Compra (Despesa não pertence a
-    # nenhum Cartão) — com o filtro ativo, a lista vira só as compras dele.
-    itens = @cartao_id.present? ? compras_listadas : despesas_listadas + compras_listadas
+    # Filtro por Cartão só faz sentido pra Compra (Despesa e Parcelamento não
+    # pertencem a nenhum Cartão) — com o filtro ativo, a lista vira só as
+    # compras dele.
+    itens = @cartao_id.present? ? compras_listadas : despesas_listadas + compras_listadas + parcelamentos_listados
     itens.sort_by(&:data).reverse
   end
 
@@ -41,6 +42,19 @@ class DespesasFiltradas < ApplicationQuery
       DespesaListada.new(
         data: compra.data_compra, categoria_nome: compra.categoria.nome, tipo_label: compra.tipo_label,
         forma_pagamento_label: "Cartão #{compra.cartao.nome}", valor: compra.valor_total, registro: compra
+      )
+    end
+  end
+
+  def parcelamentos_listados
+    relacao = Parcelamento.includes(:categoria)
+    relacao = relacao.where(categoria_id: @categoria_id) if @categoria_id.present?
+    relacao = relacao.where(data: periodo) if periodo
+
+    relacao.map do |parcelamento|
+      DespesaListada.new(
+        data: parcelamento.data, categoria_nome: parcelamento.categoria.nome, tipo_label: parcelamento.tipo_label,
+        forma_pagamento_label: parcelamento.forma_pagamento_label, valor: parcelamento.valor_total, registro: parcelamento
       )
     end
   end

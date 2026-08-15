@@ -87,6 +87,35 @@ RSpec.describe DespesasFiltradas do
     end
   end
 
+  describe "Parcelamento (despesa parcelada fora do cartão)" do
+    it "inclui o Parcelamento na listagem, marcado como não-despesa" do
+      resultado = CriarParcelamento.call(
+        valor_total: 300, numero_parcelas: 3, data: Date.new(2026, 4, 5),
+        categoria_id: transporte.id, tipo: "variavel", forma_pagamento: "boleto"
+      )
+      parcelamento = resultado.valor
+
+      item = DespesasFiltradas.call.find { |i| i.registro == parcelamento }
+
+      expect(item).not_to be_nil
+      expect(item).not_to be_despesa
+      expect(item).to be_parcelamento
+      expect(item.categoria_nome).to eq("Transporte")
+      expect(item.valor).to eq(300.to_d)
+    end
+
+    it "não aparece quando o filtro é por cartão, igual à Despesa" do
+      CriarParcelamento.call(
+        valor_total: 300, numero_parcelas: 3, data: Date.new(2026, 4, 5),
+        categoria_id: transporte.id, tipo: "variavel", forma_pagamento: "boleto"
+      )
+
+      resultado = DespesasFiltradas.call(cartao_id: cartao.id)
+
+      expect(resultado).to be_empty
+    end
+  end
+
   describe "filtro por cartão (drill-down do Painel)" do
     it "restringe a listagem só às compras com categoria daquele cartão, excluindo Despesa" do
       outro_cartao = Cartao.create!(nome: "Gold", credor: credor, limite_total: 3000, dia_fechamento: 5, dia_vencimento: 12, data_corte: Date.new(2026, 1, 1))

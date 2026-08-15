@@ -7,7 +7,7 @@ Dashboard financeiro pessoal para um único usuário controlar entradas e saída
 ### Dívida e Obrigação
 
 **Obrigação**:
-Conceito guarda-chuva para qualquer valor a pagar com vencimento e status (pendente, paga, atrasada), de quatro origens possíveis: Saldo Herdado, Parcela de Compra, Parcela de Empréstimo, ou Despesa Fixa. Sustenta o Painel (KPIs e próximos vencimentos) sem precisar de uma tela dedicada que junte cartões e empréstimos manualmente. Despesa Fixa é a única origem sem estado "paga" persistido (ver Despesa) — nela, `data` é tratada como o vencimento, e o status é sempre pendente ou atrasada, nunca paga.
+Conceito guarda-chuva para qualquer valor a pagar com vencimento e status (pendente, paga, atrasada), de cinco origens possíveis: Saldo Herdado, Parcela de Compra, Parcela de Empréstimo, Parcela de Parcelamento, ou Despesa Fixa. Sustenta o Painel (KPIs e próximos vencimentos) sem precisar de uma tela dedicada que junte cartões e empréstimos manualmente. Despesa Fixa é a única origem sem estado "paga" persistido (ver Despesa) — nela, `data` é tratada como o vencimento, e o status é sempre pendente ou atrasada, nunca paga.
 _Avoid_: Dívida (usar Obrigação como termo técnico único)
 
 **Credor**:
@@ -51,8 +51,12 @@ Dívida de parcela fixa concedida por um Credor, com cronograma completo de Parc
 _Avoid_: Financiamento (usar Empréstimo como termo técnico único, mas aceitar como sinônimo na interface)
 
 **Parcela**:
-Obrigação de valor e data de vencimento fixos, originada de uma Compra parcelada de Cartão ou de um Empréstimo. Não tem detalhamento de juros/principal — apenas o valor total já definido no contrato ou na compra. Quando a divisão de um valor total não é exata, o ajuste de centavos vai na última parcela.
+Obrigação de valor e data de vencimento fixos, originada de uma Compra parcelada de Cartão, de um Empréstimo, ou de um Parcelamento. Não tem detalhamento de juros/principal — apenas o valor total já definido no contrato, na compra ou no parcelamento. Quando a divisão de um valor total não é exata, o ajuste de centavos vai na última parcela.
 _Avoid_: Prestação
+
+**Parcelamento**:
+Compromisso de despesa dividida em Parcelas fixas, fora do Cartão (ex.: boleto parcelado, financiamento direto de uma compra à vista). Equivalente a uma Compra sem Cartão: valor total, categoria, classificação Fixa/Variável e forma de pagamento (Débito, Boleto, PIX ou Dinheiro), gerando todas as Parcelas de uma vez no lançamento. Ao contrário de Compra, não tem estado à vista — só existe para o caso parcelado (2 ou mais Parcelas); uma despesa não parcelada continua sendo só uma Despesa comum.
+_Avoid_: Despesa Parcelada, Parcelamento de Despesa
 
 ### Fluxo de caixa
 
@@ -63,7 +67,7 @@ Lançamento de entrada de dinheiro: valor, data e categoria/fonte (ex.: Salário
 _Avoid_: Entrada, receita
 
 **Despesa**:
-Lançamento de saída de dinheiro, classificado como Fixa ou Variável (rótulo, não uma diferença estrutural) e com uma forma de pagamento (Cartão específico, Débito, Boleto, PIX ou Dinheiro). Quando a forma de pagamento é um Cartão, a Despesa é a mesma linha que a Compra lançada nesse cartão — nunca duas linhas separadas. Despesa Fixa tem uma data de vencimento própria (dia do mês) e aparece nos próximos vencimentos. Ao contrário de Saldo Herdado e Parcela, Despesa não tem campo de pagamento — é lançada como um fato já resolvido. Como Obrigação, seu `data` é o vencimento e seu status nunca é "paga": some da lista de próximos vencimentos quando lançada, ficando só no histórico de Despesas.
+Lançamento de saída de dinheiro, classificado como Fixa ou Variável (rótulo, não uma diferença estrutural) e com uma forma de pagamento (Cartão específico, Débito, Boleto, PIX ou Dinheiro). Quando a forma de pagamento é um Cartão, a Despesa é a mesma linha que a Compra lançada nesse cartão — nunca duas linhas separadas. Quando é parcelada sem ser no Cartão, também não vira uma linha de Despesa — vira um Parcelamento (ver Parcelamento). Despesa Fixa tem uma data de vencimento própria (dia do mês) e aparece nos próximos vencimentos. Ao contrário de Saldo Herdado e Parcela, Despesa não tem campo de pagamento — é lançada como um fato já resolvido. Como Obrigação, seu `data` é o vencimento e seu status nunca é "paga": some da lista de próximos vencimentos quando lançada, ficando só no histórico de Despesas.
 _Avoid_: Gasto, saída
 
 **Categoria**:

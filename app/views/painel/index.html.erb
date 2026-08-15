@@ -114,7 +114,7 @@
           </tr>
         </thead>
         <tbody>
-          <% ordem_origem = [ Obrigacao::ORIGEM_SALDO_HERDADO, Obrigacao::ORIGEM_PARCELA_COMPRA, Obrigacao::ORIGEM_PARCELA_EMPRESTIMO, Obrigacao::ORIGEM_DESPESA_FIXA ] %>
+          <% ordem_origem = [ Obrigacao::ORIGEM_SALDO_HERDADO, Obrigacao::ORIGEM_PARCELA_COMPRA, Obrigacao::ORIGEM_PARCELA_EMPRESTIMO, Obrigacao::ORIGEM_PARCELAMENTO, Obrigacao::ORIGEM_DESPESA_FIXA ] %>
           <% @central_de_obrigacoes.group_by(&:origem).sort_by { |origem, _| ordem_origem.index(origem) }.each do |origem, linhas| %>
             <tr class="linha-categoria">
               <td colspan="2"><%= origem %></td>
@@ -172,6 +172,7 @@
               <th>Categoria</th>
               <th>Forma de pagamento</th>
               <th>Valor</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -181,6 +182,15 @@
                 <td><%= item.categoria_nome %></td>
                 <td><%= item.forma_pagamento_label %></td>
                 <td class="valor"><%= moeda(item.valor) %></td>
+                <td class="acoes">
+                  <% if item.despesa? %>
+                    <%= button_to "Excluir", despesa_path(item.registro), method: :delete,
+                          data: { turbo_frame: "lancamentos-frame", turbo_confirm: "Remover este lançamento?" }, class: "link-excluir" %>
+                  <% elsif item.parcelamento? %>
+                    <%= button_to "Excluir", parcelamento_path(item.registro), method: :delete,
+                          data: { turbo_frame: "lancamentos-frame", turbo_confirm: "Remover este parcelamento?" }, class: "link-excluir" %>
+                  <% end %>
+                </td>
               </tr>
             <% end %>
           </tbody>

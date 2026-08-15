@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_13_111201) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_15_153157) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -112,6 +112,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_13_111201) do
     t.index ["tipo_investimento_id"], name: "index_investimentos_on_tipo_investimento_id"
   end
 
+  create_table "parcelamentos", force: :cascade do |t|
+    t.bigint "categoria_id", null: false
+    t.integer "tipo"
+    t.integer "forma_pagamento", null: false
+    t.decimal "valor_total", precision: 10, scale: 2, null: false
+    t.integer "numero_parcelas", null: false
+    t.date "data", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["categoria_id"], name: "index_parcelamentos_on_categoria_id"
+    t.index ["data"], name: "index_parcelamentos_on_data"
+  end
+
   create_table "parcelas", force: :cascade do |t|
     t.string "origem_type", null: false
     t.bigint "origem_id", null: false
@@ -168,5 +181,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_13_111201) do
   add_foreign_key "emprestimos", "credores"
   add_foreign_key "fatura_pagamentos", "cartoes"
   add_foreign_key "investimentos", "tipos_investimento"
+  add_foreign_key "parcelamentos", "categorias"
   add_foreign_key "saldos_herdados", "cartoes"
 end

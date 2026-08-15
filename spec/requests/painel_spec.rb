@@ -64,6 +64,20 @@ RSpec.describe "Painel", type: :request do
       expect(response.body).to include("Ultravioleta")
     end
 
+    it "mostra o botão de excluir só nas linhas de Despesa e Parcelamento, não nas de Compra" do
+      Despesa.create!(valor: 400, data: Date.current, categoria: mercado, tipo: :variavel, forma_pagamento: :dinheiro)
+      CriarCompraNoCartao.call(cartao_id: cartao.id, data_compra: Date.current.beginning_of_month, valor_total: 500, parcelado: false, categoria_id: mercado.id)
+      CriarParcelamento.call(valor_total: 300, numero_parcelas: 3, data: Date.current, categoria_id: mercado.id, tipo: "variavel", forma_pagamento: "boleto")
+
+      get root_path
+
+      linhas = Nokogiri::HTML::Document.parse(response.body).css("#lancamentos-frame tbody tr")
+      linhas_com_excluir = linhas.select { |linha| linha.at_css("form[action^='/despesas'], form[action^='/parcelamentos']") }
+
+      expect(linhas.size).to eq(3)
+      expect(linhas_com_excluir.size).to eq(2)
+    end
+
     it "não quebra quando não há nenhum dado cadastrado" do
       get root_path
 
