@@ -4,10 +4,17 @@
 # recalcula parcelas ainda pendentes; as já pagas refletem o que realmente
 # aconteceu e ficam como estão.
 #
-# Rodar com: bin/rails runner db/scripts/recomputar_parcelas_fechamento.rb
+# Por padrão roda em modo dry-run: lista o que mudaria, sem salvar nada.
+# Pra aplicar de verdade:
+#   APLICAR=1 bin/rails runner db/scripts/recomputar_parcelas_fechamento.rb
+#
+# Dry-run (padrão):
+#   bin/rails runner db/scripts/recomputar_parcelas_fechamento.rb
+
+aplicar = ENV["APLICAR"] == "1"
 
 afetadas = Compra.includes(:cartao).select { |compra| compra.data_compra.day == compra.cartao.dia_fechamento }
-total_atualizadas = 0
+mudancas = []
 
 ActiveRecord::Base.transaction do
   afetadas.each do |compra|
@@ -20,10 +27,25 @@ ActiveRecord::Base.transaction do
       novo_vencimento = recalculadas[indice][:data_vencimento]
       next if !parcela.pendente? || parcela.data_vencimento == novo_vencimento
 
-      parcela.update!(data_vencimento: novo_vencimento)
-      total_atualizadas += 1
+      mudancas << {
+        cartao: compra.cartao.nome, compra_id: compra.id, compra_data: compra.data_compra, parcela_id: parcela.id,
+        valor: parcela.valor, vencimento_antigo: parcela.data_vencimento, vencimento_novo: novo_vencimento
+      }
+
+      parcela.update!(data_vencimento: novo_vencimento) if aplicar
     end
   end
+
+  raise ActiveRecord::Rollback unless aplicar
 end
 
-puts "Compras afetadas: #{afetadas.size}. Parcelas corrigidas: #{total_atualizadas}."
+puts "Modo: #{aplicar ? "APLICANDO" : "DRY-RUN (nada foi salvo)"}"
+puts "Compras afetadas: #{afetadas.size}. Parcelas #{aplicar ? "corrigidas" : "que seriam corrigidas"}: #{mudancas.size}."
+puts
+
+mudancas.each do |m|
+  linha = "Cartão #{m[:cartao]} | Compra ##{m[:compra_id]} (feita em #{m[:compra_data].strftime('%d/%m/%Y')}) | " \
+          "Parcela ##{m[:parcela_id]} | R$ #{format('%.2f', m[:valor])} | " \
+          "#{m[:vencimento_antigo].strftime('%d/%m/%Y')} -> #{m[:vencimento_novo].strftime('%d/%m/%Y')}"
+  puts linha
+end
