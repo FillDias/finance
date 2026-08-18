@@ -62,4 +62,79 @@ RSpec.describe GerarParcelas do
       ])
     end
   end
+
+  # Regressão: a correção anterior só resolvia em qual mês a compra fecha
+  # (Etapa 1) — mas quando o dia de vencimento é ANTES do dia de
+  # fechamento (o caso mais comum, ex.: fecha dia 29, vence dia 8), o
+  # vencimento cai no mês seguinte ao fechamento, não no mesmo mês. Essa
+  # segunda etapa nunca tinha teste — a fixture usada em todo o resto
+  # deste arquivo (fechamento 5, vencimento 12) só cobre o caso oposto.
+  describe "regra de vencimento (Etapa 2: em qual mês o vencimento do fechamento cai)" do
+    it "dia_vencimento < dia_fechamento, compra antes do fechamento: Itaú Pão de Açúcar (fecha 29, vence 8), compra em 05/08" do
+      resultado = GerarParcelas.call(
+        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 8, 5),
+        dia_fechamento: 29, dia_vencimento: 8
+      )
+
+      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 9, 8))
+    end
+
+    it "dia_vencimento < dia_fechamento, compra exatamente no dia de fechamento" do
+      resultado = GerarParcelas.call(
+        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 8, 29),
+        dia_fechamento: 29, dia_vencimento: 8
+      )
+
+      # fecha em setembro (dia 29 >= 29) e o vencimento (8) é antes do
+      # fechamento (29), então vence só em outubro.
+      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 10, 8))
+    end
+
+    it "dia_vencimento < dia_fechamento, compra depois do fechamento: Santander Elite (fecha 30, vence 7), compra em 20/08" do
+      resultado = GerarParcelas.call(
+        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 8, 20),
+        dia_fechamento: 30, dia_vencimento: 7
+      )
+
+      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 9, 7))
+    end
+
+    it "dia_vencimento >= dia_fechamento, compra antes do fechamento: vence no mesmo mês do fechamento" do
+      resultado = GerarParcelas.call(
+        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 8, 3),
+        dia_fechamento: 5, dia_vencimento: 20
+      )
+
+      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 8, 20))
+    end
+
+    it "dia_vencimento >= dia_fechamento, compra exatamente no dia de fechamento: vence no mesmo mês do fechamento seguinte" do
+      resultado = GerarParcelas.call(
+        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 8, 5),
+        dia_fechamento: 5, dia_vencimento: 20
+      )
+
+      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 9, 20))
+    end
+
+    it "dia_vencimento >= dia_fechamento, compra depois do fechamento: vence no mesmo mês do fechamento seguinte" do
+      resultado = GerarParcelas.call(
+        valor_total: 100, numero_parcelas: 1, data_compra: Date.new(2026, 8, 10),
+        dia_fechamento: 5, dia_vencimento: 20
+      )
+
+      expect(resultado.valor.first[:data_vencimento]).to eq(Date.new(2026, 9, 20))
+    end
+
+    it "parcelas seguintes continuam incrementando um mês a partir do primeiro vencimento correto" do
+      resultado = GerarParcelas.call(
+        valor_total: 300, numero_parcelas: 3, data_compra: Date.new(2026, 8, 5),
+        dia_fechamento: 29, dia_vencimento: 8
+      )
+
+      expect(resultado.valor.map { |p| p[:data_vencimento] }).to eq([
+        Date.new(2026, 9, 8), Date.new(2026, 10, 8), Date.new(2026, 11, 8)
+      ])
+    end
+  end
 end
