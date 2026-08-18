@@ -1,0 +1,11 @@
+# Multi-perfil via FK direta + default_scope, não via cadeia de associação
+
+O app passa a ter dois Perfis (o casal), cada um com seus próprios dados — sem senha própria por perfil (a troca é livre, tipo trocar de perfil na Netflix); a barreira contra acesso externo é a autenticação HTTP Basic na frente do app inteiro, não a separação de perfis em si.
+
+O código já consulta várias tabelas diretamente (`Compra.where(...)`, `Parcela.where(...)`, `Despesa.where(...)`) em dezenas de query objects, nem sempre passando pela associação "dona" esperada — `Parcela`, por exemplo, é consultada como tabela própria com frequência, não só através de `origem`. Por isso, decidimos dar `perfil_id` direto (FK obrigatória) a cada model consultado diretamente — Renda, Despesa, Credor, Cartao, SaldoHerdado, FaturaPagamento, Compra, Emprestimo, Parcelamento, Parcela, Investimento, Aporte — em vez de só nos "donos" de topo (Renda, Despesa, Credor) com todo o resto escopado via join through a cadeia de associação em cada query.
+
+Cada um desses models ganha `default_scope { where(perfil_id: Current.perfil&.id || 0) }`, com o perfil atual resolvido uma vez por request em `Current.perfil` (`ActiveSupport::CurrentAttributes`, carregado de `session[:perfil_id]`). Sem perfil atual, o scope não retorna nada (falha fechado) — nunca retorna tudo. `attribute :perfil_id, default: -> { Current.perfil&.id }` preenche o dono automaticamente na criação, então a maior parte dos services existentes (ex.: `emprestimo.parcelas.create!(...)`) não precisou mudar.
+
+Alternativa rejeitada: FK só nos "donos" de topo, com cada query object fazendo join explícito até o dono pra filtrar. Rejeitada porque exigiria auditar ~40 arquivos de query manualmente por joins corretos, onde um join esquecido é um vazamento silencioso de dado financeiro entre os dois perfis — o oposto do que essa mudança existe pra garantir. Com FK direta, a auditoria vira "esse model tem default_scope? sim/não", checável uma vez por model (12 no total).
+
+Categoria, Tipo de Investimento e Taxa CDI ficam de fora — são referência compartilhada (rótulos e uma taxa de mercado pública), não dado financeiro pessoal. Taxa CDI continua sendo um singleton único pra aplicação inteira (constraint de unicidade no banco), não um singleton por perfil.

@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Painel", type: :system do
-  before { driven_by :selenium_chrome_headless }
+  before do
+    driven_by :selenium_chrome_headless
+    selecionar_perfil
+  end
 
   it "atualiza os KPIs ao trocar o filtro de mês, sem recarregar a página inteira" do
     Renda.create!(valor: 700, data: Date.new(2026, 5, 10), fonte: "Salário")

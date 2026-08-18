@@ -1,8 +1,14 @@
 # Fluxo de Caixa e Dívidas
 
-Dashboard financeiro pessoal para um único usuário controlar entradas e saídas, com foco em visibilidade sobre dívidas de cartão de crédito parcelado e empréstimos/financiamentos de parcela fixa — sem reconciliação bancária ou análise de juros.
+Dashboard financeiro pessoal para um casal controlar entradas e saídas, cada um no seu próprio Perfil, com foco em visibilidade sobre dívidas de cartão de crédito parcelado e empréstimos/financiamentos de parcela fixa — sem reconciliação bancária ou análise de juros.
 
 ## Language
+
+### Perfil
+
+**Perfil**:
+Um dos dois espaços de dados independentes do app, um por pessoa do casal. Toda Obrigação, Renda, Cartão, Empréstimo, Investimento etc. pertence a exatamente um Perfil — nunca aparece no outro. Trocar de Perfil não pede senha própria (não é uma barreira de segurança entre os dois, só organização — ver Fora de escopo); a proteção contra acesso de fora é a autenticação HTTP Basic na frente do app inteiro, não a separação de Perfis em si. Categoria, Tipo de Investimento e Taxa CDI ficam de fora — são referência compartilhada entre os dois Perfis, não dado financeiro pessoal.
+_Avoid_: Usuário, Conta, Login
 
 ### Dívida e Obrigação
 
@@ -105,3 +111,4 @@ _Avoid_: Taxa de referência
 - Sem resgate parcial de Investimento — só resgate total, fechando a posição inteira.
 - Sem cálculo de juros compostos na projeção de rendimento de Investimento — estimativa simples (valor × taxa do período), sem compor.
 - Sem atualização automática da Taxa CDI — cadastro manual por enquanto; automação é melhoria futura.
+- Sem senha própria por Perfil — a troca entre os dois é livre (tipo trocar de perfil na Netflix); a proteção contra acesso externo é a autenticação HTTP Basic na frente do app inteiro, não uma barreira entre os Perfis.

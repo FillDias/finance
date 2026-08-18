@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Menu de navegação", type: :system do
-  before { driven_by :selenium_chrome_headless }
+  before do
+    driven_by :selenium_chrome_headless
+    selecionar_perfil
+  end
 
   it "abre um dropdown ao clicar, navega pro item e fecha ao clicar fora" do
     visit root_path

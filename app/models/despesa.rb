@@ -1,5 +1,6 @@
 class Despesa < ApplicationRecord
   include ClassificacaoFixaVariavel
+  include PertenceAPerfil
 
   belongs_to :categoria
 

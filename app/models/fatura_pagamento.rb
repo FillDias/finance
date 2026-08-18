@@ -1,5 +1,6 @@
 class FaturaPagamento < ApplicationRecord
   include NormalizaMesReferencia
+  include PertenceAPerfil
 
   belongs_to :cartao
 

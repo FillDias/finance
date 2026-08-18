@@ -51,11 +51,44 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+# Ver ADR 0007 — todo model com PertenceAPerfil exige Current.perfil pra
+# aparecer em qualquer Model.where/find/all (default_scope falha fechado).
+# Sem isso, as specs existentes (que criam registros sem passar perfil_id
+# explicitamente) ficariam todas quebradas.
+module SelecionaPerfilNoNavegador
+  # Só pra specs :system — request specs já resolvem via
+  # `post selecionar_perfil_path` (ver hook abaixo), que não depende de
+  # driver nenhum do Capybara. Chame depois de `driven_by`, nunca antes:
+  # esta chamada faz um `visit` de verdade, que já usa o driver ativo no
+  # momento em que roda.
+  def selecionar_perfil
+    visit perfis_path
+    click_button Current.perfil.nome
+  end
+end
+
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')
   ]
+
+  config.include SelecionaPerfilNoNavegador, type: :system
+
+  config.before do
+    Current.perfil = Perfil.create!(nome: "Perfil de teste")
+  end
+
+  config.after do
+    Current.reset
+  end
+
+  # Request specs não passam pelo Capybara/driven_by — um POST de verdade
+  # já basta pra deixar session[:perfil_id] certo pro resto do exemplo.
+  # `sem_perfil: true` pula isso, pra testar o próprio fluxo de seleção.
+  config.before(:each, type: :request) do |example|
+    post selecionar_perfil_path(Current.perfil) unless example.metadata[:sem_perfil]
+  end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

@@ -1,5 +1,6 @@
 class Investimento < ApplicationRecord
   include ValidarParPreenchido
+  include PertenceAPerfil
 
   belongs_to :tipo_investimento
   has_many :aportes, dependent: :destroy

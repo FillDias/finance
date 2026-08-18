@@ -1,6 +1,7 @@
 class SaldoHerdado < ApplicationRecord
   include NormalizaMesReferencia
   include ValidarParPreenchido
+  include PertenceAPerfil
 
   belongs_to :cartao
 

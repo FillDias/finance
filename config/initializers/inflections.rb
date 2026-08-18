@@ -25,4 +25,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.irregular "saldo_herdado", "saldos_herdados"
   inflect.irregular "tipo_investimento", "tipos_investimento"
   inflect.irregular "taxa_cdi", "taxas_cdi"
+  inflect.irregular "perfil", "perfis"
 end

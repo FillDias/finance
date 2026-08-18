@@ -1,5 +1,6 @@
 class Parcelamento < ApplicationRecord
   include ClassificacaoFixaVariavel
+  include PertenceAPerfil
 
   belongs_to :categoria
   has_many :parcelas, as: :origem, dependent: :destroy

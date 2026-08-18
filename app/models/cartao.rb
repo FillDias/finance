@@ -1,4 +1,6 @@
 class Cartao < ApplicationRecord
+  include PertenceAPerfil
+
   belongs_to :credor
   # :destroy (not :restrict_with_error like Credor/Categoria's has_many) because
   # Saldo Herdado is owned data with no meaning outside its Cartão, not a shared

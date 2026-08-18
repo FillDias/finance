@@ -1,5 +1,6 @@
 class Compra < ApplicationRecord
   include ClassificacaoFixaVariavel
+  include PertenceAPerfil
 
   belongs_to :cartao
   belongs_to :categoria, optional: true

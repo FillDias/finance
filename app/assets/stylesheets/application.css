@@ -300,6 +300,31 @@ section {
   padding: 0;
 }
 
+.grid-perfis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.perfil-card {
+  width: 220px;
+  padding: 40px 24px;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(16, 27, 45, 0.06);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--cor-texto);
+  cursor: pointer;
+  text-align: center;
+}
+
+.perfil-card:hover {
+  border-color: var(--cor-neutra);
+  color: var(--cor-neutra);
+}
+
 .grafico-card {
   display: flex;
   flex-direction: column;

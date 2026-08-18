@@ -3,6 +3,8 @@ class Emprestimo < ApplicationRecord
   # falhar (ver CriarEmprestimo) — não é persistido.
   attr_accessor :cronograma_texto
 
+  include PertenceAPerfil
+
   belongs_to :credor
   belongs_to :categoria
   has_many :parcelas, as: :origem, dependent: :destroy
